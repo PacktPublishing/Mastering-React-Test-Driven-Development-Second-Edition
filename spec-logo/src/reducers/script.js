@@ -14,7 +14,7 @@ export const defaultState = {
   name: "Unnamed script",
 };
 
-export const logoReducer = (
+export const scriptReducer = (
   state = defaultState,
   action
 ) => {

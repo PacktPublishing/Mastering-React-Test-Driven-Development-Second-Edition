@@ -1,13 +1,13 @@
 import {
-  logoReducer as reducer,
+  scriptReducer as reducer,
   defaultState,
-} from "../../src/reducers/logo";
+} from "../../src/reducers/script";
 import { parseStatement } from "../../src/parser";
 jest.mock("../../src/parser", () => ({
   parseStatement: jest.fn(),
 }));
 
-describe("logoReducer", () => {
+describe("scriptReducer", () => {
   it("returns default state when existing state is undefined", () => {
     expect(reducer(undefined, {})).toEqual(
       defaultState

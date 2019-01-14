@@ -9,7 +9,7 @@ import {
 import { Drawing } from "../src/Drawing";
 import { Turtle } from "../src/Turtle";
 jest.mock("../src/Turtle", () => ({
-  Turtle: jest.fn(() => (<div id="turtle" />))
+  Turtle: jest.fn(() => <div id="turtle" />),
 }));
 
 const horizontalLine = {
@@ -117,9 +117,7 @@ describe("Drawing", () => {
 
   it("renders a Turtle within the svg", () => {
     renderWithStore(<Drawing />);
-    expect(
-      element("svg > div#turtle")
-    ).not.toBeNull();
+    expect(element("svg > div#turtle")).not.toBeNull();
   });
 
   it("passes the turtle x, y and angle as props to Turtle", () => {

@@ -117,8 +117,8 @@ export const parseAndSaveStatement = (
   ) {
     return {
       ...updatedState,
-      parsedInstructions: [
-        ...updatedState.parsedInstructions,
+      parsedStatements: [
+        ...updatedState.parsedStatements,
         updatedState.currentInstruction,
       ],
       currentInstruction: undefined,

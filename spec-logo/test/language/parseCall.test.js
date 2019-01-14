@@ -10,7 +10,7 @@ describe("parseAndSaveStatement", () => {
     beforeEach(() => {
       state = parseAndSaveStatement(
         {
-          parsedInstructions: [],
+          parsedStatements: [],
           parsedTokens: [],
           currentInstruction: {
             id: 123,
@@ -24,11 +24,9 @@ describe("parseAndSaveStatement", () => {
       );
     });
 
-    it("appends currentInstruction to parsedInstructions when it is complete", () => {
-      expect(state.parsedInstructions).toHaveLength(
-        1
-      );
-      expect(state.parsedInstructions[0].a).toEqual(
+    it("appends currentInstruction to parsedStatements when it is complete", () => {
+      expect(state.parsedStatements).toHaveLength(1);
+      expect(state.parsedStatements[0].a).toEqual(
         123
       );
     });
@@ -54,7 +52,7 @@ describe("parseAndSaveStatement", () => {
       state = parseAndSaveStatement(
         {
           nextInstructionId: 123,
-          parsedInstructions: [],
+          parsedStatements: [],
           currentInstruction: undefined,
           parsedTokens: [],
           allFunctions: [{ names: ["forward"] }],
@@ -87,7 +85,7 @@ describe("parseAndSaveStatement", () => {
     it("adds whitespace as tokens without an instruction if currently outside an instruction", () => {
       state = parseAndSaveStatement(
         {
-          parsedInstructions: [],
+          parsedStatements: [],
           currentInstruction: undefined,
           parsedTokens: [],
           allFunctions: [{ names: ["forward"] }],

@@ -14,7 +14,7 @@ const initialState = {
   drawCommands: [],
   allFunctions: builtInFunctions,
   collectedParameters: {},
-  parsedInstructions: [],
+  parsedStatements: [],
   parsedTokens: [],
   name: "Unnamed script",
 };
@@ -637,7 +637,7 @@ describe("parseStatement", () => {
             perform: () => {},
           },
         ],
-        parsedInstructions: [],
+        parsedStatements: [],
         parsedTokens: [{ lineNumber: 123 }],
       });
 

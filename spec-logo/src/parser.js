@@ -84,3 +84,10 @@ export function parseStatement(line, state) {
     return { ...state, error: { ...e, line } };
   }
 }
+
+export function parseStatements(initialState, lines) {
+  return lines.reduce(
+    (state, line) => parseStatement(line, state),
+    initialState
+  );
+}

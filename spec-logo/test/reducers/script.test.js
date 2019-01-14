@@ -1,16 +1,18 @@
+import { scriptReducer as reducer } from "../../src/reducers/script";
 import {
-  scriptReducer as reducer,
-  defaultState,
-} from "../../src/reducers/script";
-import { parseStatement } from "../../src/parser";
+  parseStatement,
+  initialState,
+} from "../../src/parser";
 jest.mock("../../src/parser", () => ({
+  initialState: jest.requireActual("../../src/parser")
+    .initialState,
   parseStatement: jest.fn(),
 }));
 
 describe("scriptReducer", () => {
-  it("returns default state when existing state is undefined", () => {
+  it("returns initial state when existing state is undefined", () => {
     expect(reducer(undefined, {})).toEqual(
-      defaultState
+      initialState
     );
   });
 
@@ -59,7 +61,7 @@ describe("scriptReducer", () => {
       const state = { a: 123 };
       expect(
         reducer(state, { type: "RESET" })
-      ).toEqual(defaultState);
+      ).toEqual(initialState);
     });
   });
 });

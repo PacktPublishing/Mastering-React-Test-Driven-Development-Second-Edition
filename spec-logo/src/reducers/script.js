@@ -1,21 +1,10 @@
-import { parseStatement } from "../parser";
-import { builtInFunctions } from "../language/functionTable";
-
-export const defaultState = {
-  pen: { paint: true, down: true },
-  turtle: { x: 0, y: 0, angle: 0 },
-  drawCommands: [],
-  collectedParameters: {},
-  parsedStatements: [],
-  parsedTokens: [],
-  nextInstructionId: 0,
-  nextDrawCommandId: 0,
-  allFunctions: builtInFunctions,
-  name: "Unnamed script",
-};
+import {
+  parseStatement,
+  initialState,
+} from "../parser";
 
 export const scriptReducer = (
-  state = defaultState,
+  state = initialState,
   action
 ) => {
   switch (action.type) {
@@ -27,7 +16,7 @@ export const scriptReducer = (
         error: undefined,
       });
     case "RESET":
-      return defaultState;
+      return initialState;
     default:
       return state;
   }

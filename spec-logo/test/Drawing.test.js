@@ -1,4 +1,5 @@
 import React from "react";
+import { act } from "react-dom/test-utils";
 import ReactDOM from "react-dom";
 import {
   initializeReactContainer,
@@ -12,8 +13,14 @@ import {
   rotate90,
 } from "./sampleInstructions";
 import { Drawing } from "../src/Drawing";
+import { AnimatedLine } from "../src/AnimatedLine";
 import { Turtle } from "../src/Turtle";
 import { StaticLines } from "../src/StaticLines";
+jest.mock("../src/AnimatedLine", () => ({
+  AnimatedLine: jest.fn(() => (
+    <div id="AnimatedLine" />
+  )),
+}));
 jest.mock("../src/Turtle", () => ({
   Turtle: jest.fn(() => <div id="Turtle" />),
 }));
@@ -24,13 +31,27 @@ jest.mock("../src/StaticLines", () => ({
 }));
 
 describe("Drawing", () => {
+  const cancelToken = "cancelToken";
   beforeEach(() => {
     initializeReactContainer();
+    jest
+      .spyOn(window, "requestAnimationFrame")
+      .mockReturnValue(cancelToken);
+    jest.spyOn(window, "cancelAnimationFrame");
   });
 
   const svg = () => element("svg");
   const line = () => element("line");
   const allLines = () => elements("line");
+
+  const triggerRequestAnimationFrame = (time) => {
+    act(() => {
+      const mock = window.requestAnimationFrame.mock;
+      const lastCallFirstArg =
+        mock.calls[mock.calls.length - 1][0];
+      lastCallFirstArg(time);
+    });
+  };
 
   it("renders an svg inside div#viewport", () => {
     renderWithStore(<Drawing />, {
@@ -61,15 +82,13 @@ describe("Drawing", () => {
     ).not.toBeNull();
   });
 
-  it("passes the turtle x, y and angle as props to Turtle", () => {
-    const turtle = { x: 10, y: 20, angle: 30 };
-    renderWithStore(<Drawing />, {
-      script: { drawCommands: [], turtle },
+  it("initially places the turtle at 0,0 with angle 0", () => {
+    renderWithStore(<Drawing />);
+    expect(Turtle).toBeRenderedWithProps({
+      x: 0,
+      y: 0,
+      angle: 0,
     });
-    expect(Turtle).toBeCalledWith(
-      { x: 10, y: 20, angle: 30 },
-      {}
-    );
   });
 
   it("renders StaticLines within the svg", () => {
@@ -79,22 +98,140 @@ describe("Drawing", () => {
     ).not.toBeNull();
   });
 
-  it("sends only line commands to StaticLines", () => {
-    const unknown = { drawCommand: "unknown" };
+  it("does not render AnimatedLine when not moving", () => {
     renderWithStore(<Drawing />, {
-      script: {
-        drawCommands: [
-          horizontalLine,
-          verticalLine,
-          unknown,
-        ],
-      },
+      script: { drawCommands: [] },
     });
-    expect(StaticLines).toBeCalledWith(
-      {
-        lineCommands: [horizontalLine, verticalLine],
+    expect(AnimatedLine).not.toBeRendered();
+  });
+
+  describe("movement animation", () => {
+    const horizontalLineDrawn = {
+      script: {
+        drawCommands: [horizontalLine],
+        turtle: { x: 0, y: 0, angle: 0 },
       },
-      expect.anything()
-    );
+    };
+
+    it("invokes requestAnimationFrame when the timeout fires", () => {
+      renderWithStore(
+        <Drawing />,
+        horizontalLineDrawn
+      );
+      expect(
+        window.requestAnimationFrame
+      ).toBeCalled();
+    });
+
+    it("renders an AnimatedLine with turtle at the start position when the animation has run for 0s", () => {
+      renderWithStore(
+        <Drawing />,
+        horizontalLineDrawn
+      );
+      triggerRequestAnimationFrame(0);
+      expect(AnimatedLine).toBeRenderedWithProps({
+        commandToAnimate: horizontalLine,
+        turtle: { x: 100, y: 100, angle: 0 },
+      });
+    });
+
+    it("renders an AnimatedLine with turtle at a position based on a speed of 5px per ms", () => {
+      renderWithStore(
+        <Drawing />,
+        horizontalLineDrawn
+      );
+      triggerRequestAnimationFrame(0);
+      triggerRequestAnimationFrame(250);
+      expect(AnimatedLine).toBeRenderedWithProps({
+        commandToAnimate: horizontalLine,
+        turtle: { x: 150, y: 100, angle: 0 },
+      });
+    });
+
+    it("calculates move distance with a non-zero animation start time", () => {
+      const startTime = 12345;
+      renderWithStore(
+        <Drawing />,
+        horizontalLineDrawn
+      );
+      triggerRequestAnimationFrame(startTime);
+      triggerRequestAnimationFrame(startTime + 250);
+      expect(AnimatedLine).toBeRenderedWithProps({
+        commandToAnimate: horizontalLine,
+        turtle: { x: 150, y: 100, angle: 0 },
+      });
+    });
+
+    it("invokes requestAnimationFrame repeatedly until the duration is reached", () => {
+      renderWithStore(
+        <Drawing />,
+        horizontalLineDrawn
+      );
+      triggerRequestAnimationFrame(0);
+      triggerRequestAnimationFrame(250);
+      triggerRequestAnimationFrame(500);
+      expect(
+        window.requestAnimationFrame.mock.calls
+      ).toHaveLength(3);
+    });
+  });
+
+  describe("after animation", () => {
+    it("animates the next command", async () => {
+      renderWithStore(<Drawing />, {
+        script: {
+          drawCommands: [
+            horizontalLine,
+            verticalLine,
+          ],
+        },
+      });
+      triggerRequestAnimationFrame(0);
+      triggerRequestAnimationFrame(500);
+      expect(AnimatedLine).toBeRenderedWithProps(
+        expect.objectContaining({
+          commandToAnimate: verticalLine,
+        })
+      );
+    });
+
+    it("places line in StaticLines", () => {
+      renderWithStore(<Drawing />, {
+        script: {
+          drawCommands: [
+            horizontalLine,
+            verticalLine,
+          ],
+        },
+      });
+      triggerRequestAnimationFrame(0);
+      triggerRequestAnimationFrame(500);
+      expect(StaticLines).toBeRenderedWithProps({
+        lineCommands: [horizontalLine],
+      });
+    });
+  });
+
+  it("calls cancelAnimationFrame on reset", () => {
+    renderWithStore(<Drawing />, {
+      script: { drawCommands: [horizontalLine] },
+    });
+    renderWithStore(<Drawing />, {
+      script: { drawCommands: [] },
+    });
+    expect(
+      window.cancelAnimationFrame
+    ).toBeCalledWith(cancelToken);
+  });
+
+  it("does not call cancelAnimationFrame if no line animating", () => {
+    jest.spyOn(window, "cancelAnimationFrame");
+    renderWithStore(<Drawing />, {
+      script: { drawCommands: [] },
+    });
+    renderWithStore(<React.Fragment />);
+    expect(
+      window.cancelAnimationFrame
+    ).not.toBeCalled();
   });
 });

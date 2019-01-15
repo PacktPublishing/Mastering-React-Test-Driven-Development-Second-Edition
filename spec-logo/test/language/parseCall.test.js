@@ -7,7 +7,15 @@ describe("parseAndSaveStatement", () => {
   let state;
 
   describe("completing an instruction", () => {
+    let parseTokenSpy;
+    let performSpy;
+
     beforeEach(() => {
+      parseTokenSpy = jest.fn();
+      performSpy = jest.fn();
+
+      parseTokenSpy.mockReturnValue({ a: 123 });
+      performSpy.mockReturnValue({ b: 234 });
       state = parseAndSaveStatement(
         {
           parsedStatements: [],
@@ -16,7 +24,8 @@ describe("parseAndSaveStatement", () => {
             id: 123,
             isComplete: true,
             functionDefinition: {
-              parseToken: () => ({ a: 123 }),
+              parseToken: parseTokenSpy,
+              perform: performSpy,
             },
           },
         },
@@ -44,6 +53,14 @@ describe("parseAndSaveStatement", () => {
         text: "token",
         instructionId: 123,
       });
+    });
+
+    it("performs the statement", () => {
+      expect(performSpy).toBeCalled();
+    });
+
+    it("appends the result from perform", () => {
+      expect(state).toHaveProperty("b", 234);
     });
   });
 

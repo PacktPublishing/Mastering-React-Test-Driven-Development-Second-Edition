@@ -57,6 +57,9 @@
       "/node_modules/",
       "/server/"
     ],
+    "moduleNameMapper": {
+      "\\.lgo$": "<rootDir>/test/lgoMock.js"
+    },
     "clearMocks": true,
     "restoreMocks": true
   }

@@ -234,4 +234,71 @@ describe("Drawing", () => {
       window.cancelAnimationFrame
     ).not.toBeCalled();
   });
+
+  describe("rotation animation", () => {
+    const rotationPerformed = {
+      script: { drawCommands: [rotate90] },
+    };
+
+    it("rotates the turtle", () => {
+      renderWithStore(<Drawing />, rotationPerformed);
+      triggerRequestAnimationFrame(0);
+      triggerRequestAnimationFrame(500);
+      expect(Turtle).toBeRenderedWithProps({
+        x: 0,
+        y: 0,
+        angle: 90,
+      });
+    });
+
+    it("rotates part-way at a speed of 1s per 180 degrees", () => {
+      renderWithStore(<Drawing />, rotationPerformed);
+      triggerRequestAnimationFrame(0);
+      triggerRequestAnimationFrame(250);
+      expect(Turtle).toBeRenderedWithProps({
+        x: 0,
+        y: 0,
+        angle: 45,
+      });
+    });
+
+    it("calculates rotation with a non-zero animation start time", () => {
+      const startTime = 12345;
+      renderWithStore(<Drawing />, rotationPerformed);
+      triggerRequestAnimationFrame(startTime);
+      triggerRequestAnimationFrame(startTime + 250);
+      expect(Turtle).toBeRenderedWithProps({
+        x: 0,
+        y: 0,
+        angle: 45,
+      });
+    });
+
+    it("invokes requestAnimationFrame repeatedly until the duration is reached", () => {
+      renderWithStore(<Drawing />, rotationPerformed);
+      triggerRequestAnimationFrame(0);
+      triggerRequestAnimationFrame(250);
+      triggerRequestAnimationFrame(500);
+      expect(
+        window.requestAnimationFrame.mock.calls
+      ).toHaveLength(3);
+    });
+  });
+
+  it("animates the next command once rotation is complete", async () => {
+    renderWithStore(<Drawing />, {
+      script: {
+        drawCommands: [rotate90, horizontalLine],
+      },
+    });
+    triggerRequestAnimationFrame(0);
+    triggerRequestAnimationFrame(500);
+    triggerRequestAnimationFrame(0);
+    triggerRequestAnimationFrame(250);
+    expect(Turtle).toBeRenderedWithProps({
+      x: 150,
+      y: 100,
+      angle: 90,
+    });
+  });
 });

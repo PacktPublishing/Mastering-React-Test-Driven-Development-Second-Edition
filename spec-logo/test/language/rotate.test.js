@@ -33,6 +33,11 @@ describe("rotate", () => {
       updated.drawCommands[1].drawCommand
     ).toEqual("rotate");
     expect(updated.drawCommands[1].id).toEqual(1);
-    expect(updated.drawCommands[1].angle).toEqual(20);
+    expect(updated.drawCommands[1].newAngle).toEqual(
+      20
+    );
+    expect(
+      updated.drawCommands[1].previousAngle
+    ).toEqual(10);
   });
 });

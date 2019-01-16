@@ -36,12 +36,6 @@ const diagonalLine = {
   x2: 300,
   y2: 300,
 };
-const rotate90 = {
-  drawCommand: "rotate",
-  id: 456,
-  angle: 90,
-};
-const turtle = { x: 0, y: 0, angle: 0 };
 
 describe("Drawing", () => {
   beforeEach(() => {

@@ -698,7 +698,12 @@ describe("parseTokens", () => {
         x2: 100,
         y2: 0,
       },
-      { drawCommand: "rotate", id: 1, angle: 90 },
+      {
+        drawCommand: "rotate",
+        id: 1,
+        previousAngle: 0,
+        newAngle: 90,
+      },
     ]);
   });
 });

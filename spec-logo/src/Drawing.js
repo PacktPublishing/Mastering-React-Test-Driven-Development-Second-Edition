@@ -29,6 +29,11 @@ export const Drawing = () => {
     angle: 0,
   });
 
+  if (animatingCommandIndex > drawCommands.length) {
+    setAnimatingCommandIndex(0);
+    setTurtle({ x: 0, y: 0, angle: 0 });
+  }
+
   const lineCommands = drawCommands
     .slice(0, animatingCommandIndex)
     .filter(isDrawLineCommand);

@@ -11,6 +11,17 @@ const redo = () => ({ type: "REDO" });
 const skipAnimating = () => ({
   type: "SKIP_ANIMATING",
 });
+const startSharing = () => ({
+  type: "START_SHARING",
+});
+const stopSharing = () => ({ type: "STOP_SHARING" });
+
+const SharingUrl = ({ url }) => (
+  <p>
+    You are now presenting your script.{" "}
+    <a href={url}>Here's the URL for sharing.</a>
+  </p>
+);
 
 export const MenuButtons = () => {
   const { canUndo, canRedo, nextInstructionId } =
@@ -24,6 +35,12 @@ export const MenuButtons = () => {
 
   return (
     <>
+      {environment.isSharing ? (
+        <SharingUrl url={environment.url} />
+      ) : null}
+      {environment.isWatching ? (
+        <p>You are now watching the session</p>
+      ) : null}
       <button
         onClick={() => dispatch(skipAnimating())}
         disabled={!environment.shouldAnimate}
@@ -48,6 +65,19 @@ export const MenuButtons = () => {
       >
         Reset
       </button>
+      {environment.isSharing ? (
+        <button
+          onClick={() => dispatch(stopSharing())}
+        >
+          Stop sharing
+        </button>
+      ) : (
+        <button
+          onClick={() => dispatch(startSharing())}
+        >
+          Start sharing
+        </button>
+      )}
     </>
   );
 };

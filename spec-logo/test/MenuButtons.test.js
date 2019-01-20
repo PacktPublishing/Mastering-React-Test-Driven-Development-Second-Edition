@@ -3,6 +3,7 @@ import {
   initializeReactContainer,
   renderWithStore,
   store,
+  container,
   dispatchToStore,
   buttonWithLabel,
   click,
@@ -185,6 +186,70 @@ describe("MenuButtons", () => {
       return expectRedux(store)
         .toDispatchAnAction()
         .matching({ type: "SKIP_ANIMATING" });
+    });
+  });
+
+  describe("sharing button", () => {
+    it("renders Start sharing by default", () => {
+      renderWithStore(<MenuButtons />);
+      expect(
+        buttonWithLabel("Start sharing")
+      ).not.toBeNull();
+    });
+
+    it("renders Stop sharing if sharing has started", () => {
+      renderWithStore(<MenuButtons />);
+      dispatchToStore({ type: "STARTED_SHARING" });
+      expect(
+        buttonWithLabel("Stop sharing")
+      ).not.toBeNull();
+    });
+
+    it("renders Start sharing if sharing has stopped", () => {
+      renderWithStore(<MenuButtons />);
+      dispatchToStore({ type: "STARTED_SHARING" });
+      dispatchToStore({ type: "STOPPED_SHARING" });
+      expect(
+        buttonWithLabel("Start sharing")
+      ).not.toBeNull();
+    });
+
+    it("dispatches an action of START_SHARING when start sharing is clicked", () => {
+      renderWithStore(<MenuButtons />);
+      click(buttonWithLabel("Start sharing"));
+      return expectRedux(store)
+        .toDispatchAnAction()
+        .matching({ type: "START_SHARING" });
+    });
+
+    it("dispatches an action of STOP_SHARING when stop sharing is clicked", async () => {
+      renderWithStore(<MenuButtons />);
+      dispatchToStore({ type: "STARTED_SHARING" });
+      click(buttonWithLabel("Stop sharing"));
+      return expectRedux(store)
+        .toDispatchAnAction()
+        .matching({ type: "STOP_SHARING" });
+    });
+  });
+
+  describe("messages", () => {
+    it("renders a message containing the url if sharing has started", () => {
+      renderWithStore(<MenuButtons />);
+      dispatchToStore({
+        type: "STARTED_SHARING",
+        url: "http://123",
+      });
+      expect(container.innerHTML).toContain(
+        'You are now presenting your script. <a href="http://123">Here\'s the URL for sharing.</a></p>'
+      );
+    });
+
+    it("renders a message when watching has started", () => {
+      renderWithStore(<MenuButtons />);
+      dispatchToStore({ type: "STARTED_WATCHING" });
+      expect(container.innerHTML).toContain(
+        "<p>You are now watching the session</p>"
+      );
     });
   });
 });

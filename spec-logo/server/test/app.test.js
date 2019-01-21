@@ -70,18 +70,12 @@ describe("app", () => {
     };
 
     it("opens websocket connections at /share", async () => {
-      websocket = await requestWebSocket(
-        server,
-        "/share"
-      );
+      websocket = await requestWebSocket(server, "/share");
       expect(websocket.readyState).toBe(1);
     });
 
     it("returns a STARTED status with the session id when receiving a START_SHARING message", async () => {
-      websocket = await requestWebSocket(
-        server,
-        "/share"
-      );
+      websocket = await requestWebSocket(server, "/share");
       sendJsonMessage(websocket, { type: "START_SHARING" });
       const receivedMessage = await receiveJsonMessage(
         websocket
@@ -93,10 +87,7 @@ describe("app", () => {
     });
 
     it("increments session id when starting sessions", async () => {
-      websocket = await requestWebSocket(
-        server,
-        "/share"
-      );
+      websocket = await requestWebSocket(server, "/share");
       sendJsonMessage(websocket, { type: "START_SHARING" });
       const startedSharingMessage1 = await receiveJsonMessage(
         websocket
@@ -111,24 +102,25 @@ describe("app", () => {
     });
 
     it("replays all existing commands to new subscribers", async () => {
-      websocket = await requestWebSocket(
+      const websocketServer = await requestWebSocket(
         server,
         "/share"
       );
-      sendJsonMessage(websocket, { type: "START_SHARING" });
+      sendJsonMessage(websocketServer, {
+        type: "START_SHARING",
+      });
       const startedSharingMessage = await receiveJsonMessage(
-        websocket
+        websocketServer
       );
-      sendJsonMessage(websocket, {
+      sendJsonMessage(websocketServer, {
         type: "NEW_ACTION",
-        id: startedSharingMessage.id,
         innerAction: { type: "SUBMIT_EDIT_LINE" },
       });
-      sendJsonMessage(websocket, {
+      sendJsonMessage(websocketServer, {
         type: "NEW_ACTION",
-        id: startedSharingMessage.id,
         innerAction: { type: "PROMPT_FOCUS_REQUEST" },
       });
+      websocket = await requestWebSocket(server, "/share");
       sendJsonMessage(websocket, {
         type: "START_WATCHING",
         id: startedSharingMessage.id,
@@ -138,28 +130,32 @@ describe("app", () => {
         { type: "SUBMIT_EDIT_LINE" },
         { type: "PROMPT_FOCUS_REQUEST" },
       ]);
+      websocketServer.close();
     });
 
     it("sends all new actions to subscriber", async () => {
-      websocket = await requestWebSocket(
+      const websocketServer = await requestWebSocket(
         server,
         "/share"
       );
-      sendJsonMessage(websocket, { type: "START_SHARING" });
+      sendJsonMessage(websocketServer, {
+        type: "START_SHARING",
+      });
       const startedSharingMessage = await receiveJsonMessage(
-        websocket
+        websocketServer
       );
+      websocket = await requestWebSocket(server, "/share");
       sendJsonMessage(websocket, {
         type: "START_WATCHING",
         id: startedSharingMessage.id,
       });
-      sendJsonMessage(websocket, {
+      sendJsonMessage(websocketServer, {
         type: "NEW_ACTION",
-        id: startedSharingMessage.id,
         innerAction: { type: "SUBMIT_EDIT_LINE" },
       });
       const message = await receiveJsonMessage(websocket);
       expect(message).toEqual({ type: "SUBMIT_EDIT_LINE" });
+      websocketServer.close();
     });
 
     it("supports multiple subscribers", async () => {
@@ -220,10 +216,7 @@ describe("app", () => {
       const startedSharingMessage = await receiveJsonMessage(
         websocket
       );
-      websocket = await requestWebSocket(
-        server,
-        "/share"
-      );
+      websocket = await requestWebSocket(server, "/share");
       sendJsonMessage(websocket, {
         type: "START_WATCHING",
         id: startedSharingMessage.id,

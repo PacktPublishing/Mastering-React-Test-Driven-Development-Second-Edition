@@ -28,16 +28,21 @@ const sendToSubscribers = (session, obj) => {
   );
 };
 
-const stopSharingIfPresenter = (ws) => {
-  const id = Object.keys(sessions).find(
+const findSessionId = (ws) => {
+  return Object.keys(sessions).find(
     (id) =>
       sessions[id] && sessions[id].presenter === ws
   );
-  if (id) {
-    sessions[id].subscribers.forEach((subscriber) =>
+};
+
+const stopSharingIfPresenter = (ws) => {
+  const sessionId = findSessionId(ws);
+  const session = sessions[sessionId];
+  if (session) {
+    session.subscribers.forEach((subscriber) =>
       subscriber.close()
     );
-    sessions[id] = undefined;
+    sessions[sessionId] = undefined;
   }
 };
 
@@ -74,7 +79,7 @@ app.ws("/share", function (ws) {
         }
         break;
       case "NEW_ACTION":
-        session = sessions[request.id];
+        session = sessions[findSessionId(ws)];
         sendToSubscribers(
           session,
           request.innerAction

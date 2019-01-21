@@ -8,6 +8,7 @@ import {
   buttonWithLabel,
   click,
 } from "./reactTestExtensions";
+import { act } from "react-dom/test-utils";
 import { expectRedux } from "expect-redux";
 import { MenuButtons } from "../src/MenuButtons";
 
@@ -190,6 +191,23 @@ describe("MenuButtons", () => {
   });
 
   describe("sharing button", () => {
+    let socketSpyFactory;
+    let socketSpy;
+
+    beforeEach(() => {
+      socketSpyFactory = jest.spyOn(
+        window,
+        "WebSocket"
+      );
+      socketSpyFactory.mockImplementation(() => {
+        socketSpy = {
+          close: () => {},
+          send: () => {},
+        };
+        return socketSpy;
+      });
+    });
+
     it("renders Start sharing by default", () => {
       renderWithStore(<MenuButtons />);
       expect(
@@ -222,9 +240,18 @@ describe("MenuButtons", () => {
         .matching({ type: "START_SHARING" });
     });
 
+    const notifySocketOpened = async () => {
+      const data = JSON.stringify({ id: 1 });
+      await act(async () => {
+        await socketSpy.onopen();
+        socketSpy.onmessage({ data });
+      });
+    };
+
     it("dispatches an action of STOP_SHARING when stop sharing is clicked", async () => {
       renderWithStore(<MenuButtons />);
-      dispatchToStore({ type: "STARTED_SHARING" });
+      dispatchToStore({ type: "START_SHARING" });
+      await notifySocketOpened();
       click(buttonWithLabel("Stop sharing"));
       return expectRedux(store)
         .toDispatchAnAction()

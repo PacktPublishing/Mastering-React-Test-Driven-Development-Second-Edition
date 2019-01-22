@@ -67,12 +67,14 @@ export const MenuButtons = () => {
       </button>
       {environment.isSharing ? (
         <button
+          id="stopSharing"
           onClick={() => dispatch(stopSharing())}
         >
           Stop sharing
         </button>
       ) : (
         <button
+          id="startSharing"
           onClick={() => dispatch(startSharing())}
         >
           Start sharing

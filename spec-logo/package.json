@@ -7,10 +7,13 @@
     "test": "test"
   },
   "scripts": {
-    "build": "webpack",
-    "format": "prettier --write {src,test}/*",
-    "lint": "eslint {src,test}/**/*",
-    "test": "jest"
+    "build": "npm run build-server && webpack",
+    "build-server": "webpack --config webpack-server.config.js",
+    "format": "prettier --write {src,test,server}/*",
+    "lint": "eslint {src,test,server}/**/*",
+    "serve": "node dist/server/server.js",
+    "test": "jest",
+    "test-server": "jest --config server/jest.json"
   },
   "repository": {
     "type": "git",
@@ -19,7 +22,10 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@babel/cli": "^7.17.10",
     "@babel/runtime": "^7.18.6",
+    "express": "^4.18.1",
+    "express-ws": "^5.0.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-redux": "^8.0.2",
@@ -38,8 +44,12 @@
     "expect-redux": "^5.0.3",
     "jest": "^28.1.1",
     "jest-environment-jsdom": "^28.1.3",
+    "raw-loader": "^4.0.2",
+    "supertest": "^6.2.3",
     "webpack": "^5.74.0",
-    "webpack-cli": "^4.10.0"
+    "webpack-cli": "^4.10.0",
+    "webpack-node-externals": "^3.0.0",
+    "ws": "^8.8.0"
   },
   "prettier": {
     "printWidth": 54
@@ -49,6 +59,9 @@
     "globals": {
       "IS_REACT_ACT_ENVIRONMENT": true
     },
+    "moduleNameMapper": {
+      "\\.lgo$": "<rootDir>/test/lgoMock.js"
+    },
     "setupFilesAfterEnv": [
       "./test/domMatchers.js",
       "./test/globals.js"
@@ -57,9 +70,6 @@
       "/node_modules/",
       "/server/"
     ],
-    "moduleNameMapper": {
-      "\\.lgo$": "<rootDir>/test/lgoMock.js"
-    },
     "clearMocks": true,
     "restoreMocks": true
   }

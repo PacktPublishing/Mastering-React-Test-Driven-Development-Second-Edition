@@ -5,13 +5,13 @@ import {
 } from "@cucumber/cucumber";
 import expect from "expect";
 
-const port = process.env.PORT || 3000;
-export const appPage = `http://localhost:${port}/index.html`;
-
 Given(
   "the presenter navigated to the application page",
   async function () {
-    await this.browseToPageFor("presenter", appPage);
+    await this.browseToPageFor(
+      "presenter",
+      this.appPage()
+    );
   }
 );
 

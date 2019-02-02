@@ -53,6 +53,9 @@ describe("Drawing", () => {
     });
   };
 
+  const triggerAnimationSequence = (times) =>
+    times.forEach(triggerRequestAnimationFrame);
+
   it("renders an svg inside div#viewport", () => {
     renderWithStore(<Drawing />, {
       script: { drawCommands: [] },
@@ -140,8 +143,7 @@ describe("Drawing", () => {
         <Drawing />,
         horizontalLineDrawn
       );
-      triggerRequestAnimationFrame(0);
-      triggerRequestAnimationFrame(250);
+      triggerAnimationSequence([0, 250]);
       expect(AnimatedLine).toBeRenderedWithProps({
         commandToAnimate: horizontalLine,
         turtle: { x: 150, y: 100, angle: 0 },
@@ -167,9 +169,7 @@ describe("Drawing", () => {
         <Drawing />,
         horizontalLineDrawn
       );
-      triggerRequestAnimationFrame(0);
-      triggerRequestAnimationFrame(250);
-      triggerRequestAnimationFrame(500);
+      triggerAnimationSequence([0, 250, 500]);
       expect(
         window.requestAnimationFrame.mock.calls
       ).toHaveLength(3);
@@ -177,7 +177,7 @@ describe("Drawing", () => {
   });
 
   describe("after animation", () => {
-    it("animates the next command", async () => {
+    it("animates the next command", () => {
       renderWithStore(<Drawing />, {
         script: {
           drawCommands: [
@@ -186,8 +186,7 @@ describe("Drawing", () => {
           ],
         },
       });
-      triggerRequestAnimationFrame(0);
-      triggerRequestAnimationFrame(500);
+      triggerAnimationSequence([0, 500]);
       expect(AnimatedLine).toBeRenderedWithProps(
         expect.objectContaining({
           commandToAnimate: verticalLine,
@@ -242,8 +241,7 @@ describe("Drawing", () => {
 
     it("rotates the turtle", () => {
       renderWithStore(<Drawing />, rotationPerformed);
-      triggerRequestAnimationFrame(0);
-      triggerRequestAnimationFrame(500);
+      triggerAnimationSequence([0, 500]);
       expect(Turtle).toBeRenderedWithProps({
         x: 0,
         y: 0,
@@ -253,8 +251,7 @@ describe("Drawing", () => {
 
     it("rotates part-way at a speed of 1s per 180 degrees", () => {
       renderWithStore(<Drawing />, rotationPerformed);
-      triggerRequestAnimationFrame(0);
-      triggerRequestAnimationFrame(250);
+      triggerAnimationSequence([0, 250]);
       expect(Turtle).toBeRenderedWithProps({
         x: 0,
         y: 0,
@@ -276,9 +273,7 @@ describe("Drawing", () => {
 
     it("invokes requestAnimationFrame repeatedly until the duration is reached", () => {
       renderWithStore(<Drawing />, rotationPerformed);
-      triggerRequestAnimationFrame(0);
-      triggerRequestAnimationFrame(250);
-      triggerRequestAnimationFrame(500);
+      triggerAnimationSequence([0, 250, 500]);
       expect(
         window.requestAnimationFrame.mock.calls
       ).toHaveLength(3);
@@ -291,10 +286,7 @@ describe("Drawing", () => {
         drawCommands: [rotate90, horizontalLine],
       },
     });
-    triggerRequestAnimationFrame(0);
-    triggerRequestAnimationFrame(500);
-    triggerRequestAnimationFrame(0);
-    triggerRequestAnimationFrame(250);
+    triggerAnimationSequence([0, 500, 0, 250]);
     expect(Turtle).toBeRenderedWithProps({
       x: 150,
       y: 100,
@@ -309,10 +301,7 @@ describe("Drawing", () => {
           drawCommands: [horizontalLine, rotate90],
         },
       });
-      triggerRequestAnimationFrame(0);
-      triggerRequestAnimationFrame(500);
-      triggerRequestAnimationFrame(0);
-      triggerRequestAnimationFrame(500);
+      triggerAnimationSequence([0, 500, 0, 500]);
       renderWithStore(<Drawing />, {
         script: { drawCommands: [] },
       });

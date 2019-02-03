@@ -2,7 +2,7 @@ import expect from "expect";
 
 export const checkLinesFromDataTable = (page) =>
   async function (dataTable) {
-    await this.getPage(page).waitForTimeout(2000);
+    await this.waitForAnimationToEnd(page);
     const lines = await this.getPage(page).$$eval(
       "line",
       (lines) =>

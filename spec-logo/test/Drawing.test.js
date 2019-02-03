@@ -368,4 +368,35 @@ describe("Drawing", () => {
       });
     });
   });
+
+  describe("isAnimating", () => {
+    it("initially does not have the isAnimating class set", () => {
+      renderWithStore(<Drawing />, {
+        script: { drawCommands: [] },
+      });
+      expect(element("#viewport")).not.toHaveClass(
+        "isAnimating"
+      );
+    });
+
+    it("adds isAnimating class to viewport when animation begins", () => {
+      renderWithStore(<Drawing />, {
+        script: { drawCommands: [horizontalLine] },
+      });
+      triggerRequestAnimationFrame(0);
+      expect(element("#viewport")).toHaveClass(
+        "isAnimating"
+      );
+    });
+
+    it("removes isAnimating class when animation is finished", () => {
+      renderWithStore(<Drawing />, {
+        script: { drawCommands: [horizontalLine] },
+      });
+      triggerAnimationSequence([0, 500]);
+      expect(element("#viewport")).not.toHaveClass(
+        "isAnimating"
+      );
+    });
+  });
 });

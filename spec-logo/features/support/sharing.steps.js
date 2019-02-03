@@ -46,6 +46,14 @@ When(
   }
 );
 
+When(
+  "the observer waits for animations to finish",
+  async function () {
+    await this.waitForAnimationToBegin("observer");
+    await this.waitForAnimationToEnd("observer");
+  }
+);
+
 Then(
   "the observer should see a message saying {string}",
   async function (message) {
@@ -64,10 +72,8 @@ When(
         "textarea",
         `${instruction}\n`
       );
+      await this.waitForAnimationToEnd("presenter");
     }
-    await this.getPage("presenter").waitForTimeout(
-      3500
-    );
   }
 );
 
@@ -110,18 +116,13 @@ Then(
     expectedY,
     expectedAngle
   ) {
-    await this.getPage("observer").waitForTimeout(
-      4000
-    );
+    await this.waitForAnimationToEnd("observer");
     const turtle = await this.getPage(
       "observer"
     ).$eval("polygon", (polygon) => ({
       points: polygon.getAttribute("points"),
       transform: polygon.getAttribute("transform"),
     }));
-    const position = calculateTurtleXYFromPoints(
-      turtle.points
-    );
     const angle = calculateTurtleAngleFromTransform(
       turtle.transform
     );
@@ -138,18 +139,13 @@ Then(
     expectedY,
     expectedAngle
   ) {
-    await this.getPage("presenter").waitForTimeout(
-      4000
-    );
+    await this.waitForAnimationToEnd("presenter");
     const turtle = await this.getPage(
       "presenter"
     ).$eval("polygon", (polygon) => ({
       points: polygon.getAttribute("points"),
       transform: polygon.getAttribute("transform"),
     }));
-    const position = calculateTurtleXYFromPoints(
-      turtle.points
-    );
     const angle = calculateTurtleAngleFromTransform(
       turtle.transform
     );

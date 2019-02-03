@@ -38,6 +38,21 @@ class World {
     await page.goto(url);
     this.setPage(role, page);
   }
+
+  waitForAnimationToBegin(page) {
+    return this.getPage(page).waitForSelector(
+      ".isAnimating"
+    );
+  }
+
+  waitForAnimationToEnd(page) {
+    return this.getPage(page).waitForSelector(
+      ".isAnimating",
+      {
+        hidden: true,
+      }
+    );
+  }
 }
 
 setWorldConstructor(World);

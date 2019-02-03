@@ -24,8 +24,8 @@ When(
         "textarea",
         `${instruction}\n`
       );
+      await this.waitForAnimationToEnd("user");
     }
-    await this.getPage("user").waitForTimeout(3000);
   }
 );
 

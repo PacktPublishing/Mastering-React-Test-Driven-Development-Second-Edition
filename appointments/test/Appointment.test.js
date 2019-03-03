@@ -4,18 +4,21 @@ import { act } from "react-dom/test-utils";
 import { Appointment } from "../src/Appointment";
 
 describe("Appointment", () => {
-  it("renders the customer first name", () => {
-    const customer = { firstName: "Ashley" };
-    const component = (
-      <Appointment customer={customer} />
-    );
-    const container = document.createElement("div");
-    document.body.replaceChildren(container);
+  let container;
 
+  beforeEach(() => {
+    container = document.createElement("div");
+    document.body.replaceChildren(container);
+  });
+
+  const render = (component) =>
     act(() =>
       ReactDOM.createRoot(container).render(component)
     );
 
+  it("renders the customer first name", () => {
+    const customer = { firstName: "Ashley" };
+    render(<Appointment customer={customer} />);
     expect(document.body.textContent).toContain(
       "Ashley"
     );
@@ -23,15 +26,8 @@ describe("Appointment", () => {
 
   it("renders another customer first name", () => {
     const customer = { firstName: "Jordan" };
-    const component = (
-      <Appointment customer={customer} />
-    );
-    const container = document.createElement("div");
-    document.body.replaceChildren(container);
 
-    act(() =>
-      ReactDOM.createRoot(container).render(component)
-    );
+    render(<Appointment customer={customer} />);
 
     expect(document.body.textContent).toContain(
       "Jordan"

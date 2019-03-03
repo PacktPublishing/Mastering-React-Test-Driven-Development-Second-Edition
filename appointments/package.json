@@ -4,7 +4,8 @@
   "description": "Appointments system",
   "main": "index.js",
   "scripts": {
-    "test": "jest"
+    "test": "jest",
+    "format": "prettier --write {src,test}/*"
   },
   "repository": {
     "type": "git",
@@ -13,6 +14,17 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.16.5",
+    "@babel/preset-env": "^7.16.5",
+    "@babel/preset-react": "^7.16.5",
     "jest": "^28.1.1"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.16.5",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0"
+  },
+  "prettier": {
+    "printWidth": 64
   }
 }

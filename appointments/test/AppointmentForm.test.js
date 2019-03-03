@@ -8,6 +8,8 @@ import {
   elements,
   submitButton,
   click,
+  labelFor,
+  change,
 } from "./reactTestExtensions";
 import { AppointmentForm } from "../src/AppointmentForm";
 import { today, todayAt, tomorrowAt } from "./builders/time";
@@ -59,6 +61,8 @@ describe("AppointmentForm", () => {
   });
 
   describe("service field", () => {
+    const services = ["Cut", "Blow-dry"];
+
     it("renders as a select box", () => {
       render(<AppointmentForm {...testProps} />);
       expect(field("service")).toBeElementWithTag("select");
@@ -94,11 +98,56 @@ describe("AppointmentForm", () => {
         <AppointmentForm
           {...testProps}
           original={appointment}
-          selectableServices={services}
         />
       );
       const option = findOption(field("service"), "Blow-dry");
       expect(option.selected).toBe(true);
+    });
+
+    it("renders a label for the service field", () => {
+      render(<AppointmentForm {...testProps} />);
+      expect(labelFor("service")).not.toBeNull();
+    });
+
+    it("render 'Salon service' as the label content", () => {
+      render(<AppointmentForm {...testProps} />);
+      expect(labelFor("service")).toContainText(
+        "Salon service"
+      );
+    });
+
+    it("assigns an id that matches the label id", () => {
+      render(<AppointmentForm {...testProps} />);
+      expect(field("service").id).toEqual("service");
+    });
+
+    it("saves existing value when submitted", () => {
+      expect.hasAssertions();
+      const appointment = { service: "Blow-dry" };
+      render(
+        <AppointmentForm
+          {...testProps}
+          original={appointment}
+          onSubmit={({ service }) =>
+            expect(service).toEqual("Blow-dry")
+          }
+        />
+      );
+      click(submitButton());
+    });
+
+    it("saves new value when submitted", () => {
+      expect.hasAssertions();
+      render(
+        <AppointmentForm
+          {...testProps}
+          onSubmit={({ service }) =>
+            expect(service).toEqual("Cut")
+          }
+        />
+      );
+      change(field("service"), "Cut");
+      click(submitButton());
     });
   });
 

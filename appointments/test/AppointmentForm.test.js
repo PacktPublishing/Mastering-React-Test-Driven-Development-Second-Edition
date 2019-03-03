@@ -8,6 +8,10 @@ import {
 import { AppointmentForm } from "../src/AppointmentForm";
 
 describe("AppointmentForm", () => {
+  const blankAppointment = {
+    service: "",
+  };
+
   beforeEach(() => {
     initializeReactContainer();
   });
@@ -18,14 +22,27 @@ describe("AppointmentForm", () => {
       (node) => node.textContent
     );
 
+  const findOption = (selectBox, textContent) => {
+    const options = Array.from(selectBox.childNodes);
+    return options.find(
+      (option) => option.textContent === textContent
+    );
+  };
+
   it("renders a form", () => {
-    render(<AppointmentForm />);
+    render(
+      <AppointmentForm original={blankAppointment} />
+    );
     expect(form()).not.toBeNull();
   });
 
   describe("service field", () => {
     it("renders as a select box", () => {
-      render(<AppointmentForm />);
+      render(
+        <AppointmentForm
+          original={blankAppointment}
+        />
+      );
       expect(field("service")).not.toBeNull();
       expect(field("service").tagName).toEqual(
         "SELECT"
@@ -33,7 +50,11 @@ describe("AppointmentForm", () => {
     });
 
     it("has a blank value as the first value", () => {
-      render(<AppointmentForm />);
+      render(
+        <AppointmentForm
+          original={blankAppointment}
+        />
+      );
       const firstOption =
         field("service").childNodes[0];
       expect(firstOption.value).toEqual("");
@@ -44,6 +65,7 @@ describe("AppointmentForm", () => {
 
       render(
         <AppointmentForm
+          original={blankAppointment}
           selectableServices={services}
         />
       );
@@ -51,6 +73,28 @@ describe("AppointmentForm", () => {
       expect(
         labelsOfAllOptions(field("service"))
       ).toEqual(expect.arrayContaining(services));
+
+      expect(
+        labelsOfAllOptions(field("service"))
+      ).toEqual(expect.arrayContaining(services));
+    });
+
+    it("pre-selects the existing value", () => {
+      const services = ["Cut", "Blow-dry"];
+      const appointment = {
+        service: "Blow-dry",
+      };
+      render(
+        <AppointmentForm
+          original={appointment}
+          selectableServices={services}
+        />
+      );
+      const option = findOption(
+        field("service"),
+        "Blow-dry"
+      );
+      expect(option.selected).toBe(true);
     });
   });
 });

@@ -143,6 +143,14 @@ export const AppointmentForm = ({
   const [appointment, setAppointment] =
     useState(original);
 
+  const handleServiceChange = ({
+    target: { value },
+  }) =>
+    setAppointment((appointment) => ({
+      ...appointment,
+      service: value,
+    }));
+
   const handleStartsAtChange = useCallback(
     ({ target: { value } }) =>
       setAppointment((appointment) => ({
@@ -163,8 +171,8 @@ export const AppointmentForm = ({
       <select
         name="service"
         id="service"
-        value={original.service}
-        readOnly
+        value={appointment.service}
+        onChange={handleServiceChange}
       >
         <option />
         {selectableServices.map((s) => (

@@ -21,7 +21,8 @@
     "eslint": "^8.6.0",
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-react-hooks": "^4.3.0",
-    "jest": "^28.1.1"
+    "jest": "^28.1.1",
+    "jest-environment-jsdom": "^28.1.1"
   },
   "dependencies": {
     "@babel/runtime": "^7.16.5",
@@ -30,5 +31,11 @@
   },
   "prettier": {
     "printWidth": 64
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "globals": {
+      "IS_REACT_ACT_ENVIRONMENT": true
+    }
   }
 }

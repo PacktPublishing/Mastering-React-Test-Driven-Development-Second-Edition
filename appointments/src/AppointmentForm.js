@@ -30,10 +30,39 @@ const toShortDate = (timestamp) => {
 const toTimeValue = (timestamp) =>
   new Date(timestamp).toTimeString().substring(0, 5);
 
+const mergeDateAndTime = (date, timeSlot) => {
+  const time = new Date(timeSlot);
+  return new Date(date).setHours(
+    time.getHours(),
+    time.getMinutes(),
+    time.getSeconds(),
+    time.getMilliseconds()
+  );
+};
+
+const RadioButtonIfAvailable = ({
+  availableTimeSlots,
+  date,
+  timeSlot,
+}) => {
+  const startsAt = mergeDateAndTime(date, timeSlot);
+  if (
+    availableTimeSlots.some(
+      (timeSlot) => timeSlot.startsAt === startsAt
+    )
+  ) {
+    return (
+      <input name="startsAt" type="radio" value={startsAt} />
+    );
+  }
+  return null;
+};
+
 const TimeSlotTable = ({
   salonOpensAt,
   salonClosesAt,
   today,
+  availableTimeSlots,
 }) => {
   const dates = weeklyDateValues(today);
   const timeSlots = dailyTimeSlots(salonOpensAt, salonClosesAt);
@@ -51,6 +80,15 @@ const TimeSlotTable = ({
         {timeSlots.map((timeSlot) => (
           <tr key={timeSlot}>
             <th>{toTimeValue(timeSlot)}</th>
+            {dates.map((date) => (
+              <td key={date}>
+                <RadioButtonIfAvailable
+                  availableTimeSlots={availableTimeSlots}
+                  date={date}
+                  timeSlot={timeSlot}
+                />
+              </td>
+            ))}
           </tr>
         ))}
       </tbody>
@@ -64,6 +102,7 @@ export const AppointmentForm = ({
   salonOpensAt,
   salonClosesAt,
   today,
+  availableTimeSlots,
 }) => (
   <form>
     <label htmlFor="service">Salon service</label>
@@ -82,6 +121,7 @@ export const AppointmentForm = ({
       salonOpensAt={salonOpensAt}
       salonClosesAt={salonClosesAt}
       today={today}
+      availableTimeSlots={availableTimeSlots}
     />
   </form>
 );

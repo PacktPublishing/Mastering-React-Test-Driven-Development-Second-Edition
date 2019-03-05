@@ -25,8 +25,14 @@ describe("AppointmentForm", () => {
   };
 
   const availableTimeSlots = [
-    { startsAt: todayAt(9) },
-    { startsAt: todayAt(9, 30) },
+    {
+      startsAt: todayAt(9),
+      stylists: ["Ashley", "Jo"],
+    },
+    {
+      startsAt: todayAt(9, 30),
+      stylists: ["Ashley"],
+    },
   ];
 
   const services = ["Cut", "Blow-dry"];
@@ -292,9 +298,18 @@ describe("AppointmentForm", () => {
 
     it("renders radio buttons in the correct table cell positions", () => {
       const availableTimeSlots = [
-        { startsAt: todayAt(9, 0) },
-        { startsAt: todayAt(9, 30) },
-        { startsAt: tomorrowAt(9, 30) },
+        {
+          startsAt: todayAt(9),
+          stylists: ["Ashley"],
+        },
+        {
+          startsAt: todayAt(9, 30),
+          stylists: ["Ashley"],
+        },
+        {
+          startsAt: tomorrowAt(9, 30),
+          stylists: ["Ashley"],
+        },
       ];
 
       render(
@@ -387,6 +402,30 @@ describe("AppointmentForm", () => {
       );
       click(startsAtField(1));
       click(submitButton());
+    });
+
+    it("filters appointments by selected stylist", () => {
+      const availableTimeSlots = [
+        {
+          startsAt: todayAt(9),
+          stylists: ["Ashley"],
+        },
+        {
+          startsAt: todayAt(9, 30),
+          stylists: ["Jo"],
+        },
+      ];
+
+      render(
+        <AppointmentForm
+          {...testProps}
+          availableTimeSlots={availableTimeSlots}
+        />
+      );
+
+      change(field("stylist"), "Jo");
+
+      expect(cellsWithRadioButtons()).toEqual([7]);
     });
   });
 });

@@ -135,6 +135,7 @@ export const AppointmentForm = ({
   original,
   selectableServices,
   selectableStylists,
+  serviceStylists,
   salonOpensAt,
   salonClosesAt,
   today,
@@ -160,6 +161,10 @@ export const AppointmentForm = ({
       })),
     []
   );
+
+  const stylistsForService = appointment.service
+    ? serviceStylists[appointment.service]
+    : selectableStylists;
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -189,7 +194,7 @@ export const AppointmentForm = ({
         onChange={handleSelectBoxChange}
       >
         <option />
-        {selectableStylists.map((s) => (
+        {stylistsForService.map((s) => (
           <option key={s}>{s}</option>
         ))}
       </select>
@@ -221,4 +226,12 @@ AppointmentForm.defaultProps = {
     "Extensions",
   ],
   selectableStylists: ["Ashley", "Jo", "Pat", "Sam"],
+  serviceStylists: {
+    Cut: ["Ashley", "Jo", "Pat", "Sam"],
+    "Blow-dry": ["Ashley", "Jo", "Pat", "Sam"],
+    "Cut & color": ["Ashley", "Jo"],
+    "Beard trim": ["Pat", "Sam"],
+    "Cut & beard trim": ["Pat", "Sam"],
+    Extensions: ["Ashley", "Pat"],
+  },
 };

@@ -180,6 +180,30 @@ describe("AppointmentForm", () => {
     itAssignsAnIdThatMatchesTheLabelId("stylist");
     itSubmitsExistingValue("stylist", "Jo");
     itSubmitsNewValue("stylist", "Jo");
+
+    it("lists only stylists that can perform the selected service", () => {
+      const selectableServices = ["1", "2"];
+      const selectableStylists = ["A", "B", "C"];
+      const serviceStylists = {
+        1: ["A", "B"],
+      };
+
+      const appointment = { service: "1" };
+
+      render(
+        <AppointmentForm
+          {...testProps}
+          original={appointment}
+          selectableServices={selectableServices}
+          selectableStylists={selectableStylists}
+          serviceStylists={serviceStylists}
+        />
+      );
+
+      expect(labelsOfAllOptions(field("stylist"))).toEqual(
+        expect.arrayContaining(["A", "B"])
+      );
+    });
   });
 
   describe("time slot table", () => {

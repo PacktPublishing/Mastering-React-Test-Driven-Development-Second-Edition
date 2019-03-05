@@ -137,6 +137,12 @@ export const AppointmentForm = ({
     ? serviceStylists[appointment.service]
     : selectableStylists;
 
+  const timeSlotsForStylist = appointment.stylist
+    ? availableTimeSlots.filter((slot) =>
+        slot.stylists.includes(appointment.stylist)
+      )
+    : availableTimeSlots;
+
   const handleSubmit = (event) => {
     event.preventDefault();
     onSubmit(appointment);
@@ -174,7 +180,7 @@ export const AppointmentForm = ({
         salonOpensAt={salonOpensAt}
         salonClosesAt={salonClosesAt}
         today={today}
-        availableTimeSlots={availableTimeSlots}
+        availableTimeSlots={timeSlotsForStylist}
         checkedTimeSlot={appointment.startsAt}
         handleChange={handleStartsAtChange}
       />

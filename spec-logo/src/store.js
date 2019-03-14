@@ -10,6 +10,7 @@ import {
   save,
   load,
 } from "./middleware/localStorage";
+import { environmentReducer } from "./reducers/environment";
 
 export const configureStore = (
   storeEnhancers = [],
@@ -18,6 +19,7 @@ export const configureStore = (
   return createStore(
     combineReducers({
       script: withUndoRedo(scriptReducer),
+      environment: environmentReducer,
     }),
     initialState,
     compose(

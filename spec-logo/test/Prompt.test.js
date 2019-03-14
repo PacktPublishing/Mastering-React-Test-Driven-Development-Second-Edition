@@ -3,6 +3,7 @@ import { expectRedux } from "expect-redux";
 import {
   initializeReactContainer,
   renderWithStore,
+  dispatchToStore,
   store,
   element,
   elements,
@@ -85,6 +86,43 @@ describe("Prompt", () => {
       renderInTableWithStore(<Prompt />);
       submitAnInstruction();
       expect(textArea().value).toEqual("");
+    });
+  });
+
+  describe("prompt focus", () => {
+    it("sets focus when component first renders", () => {
+      renderInTableWithStore(<Prompt />);
+      expect(document.activeElement).toEqual(
+        textArea()
+      );
+    });
+
+    const jsdomClearFocus = () => {
+      const node = document.createElement("input");
+      document.body.appendChild(node);
+      node.focus();
+      node.remove();
+    };
+
+    it("calls focus on the underlying DOM element if promptFocusRequest is true", async () => {
+      renderInTableWithStore(<Prompt />);
+      jsdomClearFocus();
+      dispatchToStore({
+        type: "PROMPT_FOCUS_REQUEST",
+      });
+      expect(document.activeElement).toEqual(
+        textArea()
+      );
+    });
+
+    it("dispatches an action notifying that the prompt has focused", () => {
+      renderInTableWithStore(<Prompt />);
+      dispatchToStore({
+        type: "PROMPT_FOCUS_REQUEST",
+      });
+      return expectRedux(store)
+        .toDispatchAnAction()
+        .matching({ type: "PROMPT_HAS_FOCUSED" });
     });
   });
 });

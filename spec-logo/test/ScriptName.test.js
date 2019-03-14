@@ -78,6 +78,12 @@ describe("ScriptName", () => {
         "isEditing"
       );
     });
+
+    it("dispatches a prompt focus request", () => {
+      return expectRedux(store)
+        .toDispatchAnAction()
+        .matching({ type: "PROMPT_FOCUS_REQUEST" });
+    });
   });
 
   describe("when the user moves focus somewhere else", () => {

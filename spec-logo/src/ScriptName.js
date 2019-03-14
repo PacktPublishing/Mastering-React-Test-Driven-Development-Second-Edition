@@ -15,6 +15,10 @@ const submitScriptName = (text) => ({
   text,
 });
 
+const promptFocusRequest = () => ({
+  type: "PROMPT_FOCUS_REQUEST",
+});
+
 export const ScriptName = () => {
   const name = useSelector(
     ({ script }) => script.name
@@ -29,10 +33,12 @@ export const ScriptName = () => {
 
   const toggleEditingScriptName = () =>
     setEditingScriptName(!editingScriptName);
+
   const completeEditingScriptName = () => {
     if (editingScriptName) {
       toggleEditingScriptName();
       dispatch(submitScriptName(updatedScriptName));
+      dispatch(promptFocusRequest());
     }
   };
 

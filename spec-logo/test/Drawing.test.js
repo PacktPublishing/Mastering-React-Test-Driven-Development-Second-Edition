@@ -2,12 +2,15 @@ import React from "react";
 import ReactDOM from "react-dom";
 import {
   initializeReactContainer,
-  render,
   renderWithStore,
   element,
   elements,
 } from "./reactTestExtensions";
-import { Turtle, Drawing } from "../src/Drawing";
+import { Drawing } from "../src/Drawing";
+import { Turtle } from "../src/Turtle";
+jest.mock("../src/Turtle", () => ({
+  Turtle: jest.fn(() => <div id="turtle" />),
+}));
 
 const horizontalLine = {
   drawCommand: "drawLine",
@@ -33,58 +36,12 @@ const diagonalLine = {
   x2: 300,
   y2: 300,
 };
-let rotate90 = {
+const rotate90 = {
   drawCommand: "rotate",
   id: 456,
   angle: 90,
 };
 const turtle = { x: 0, y: 0, angle: 0 };
-
-describe("Turtle", () => {
-  beforeEach(() => {
-    initializeReactContainer();
-  });
-
-  const polygon = () => element("polygon");
-  const renderSvg = (component) =>
-    render(<svg>{component}</svg>);
-
-  it("draws a polygon at the x,y co-ordinate", () => {
-    renderSvg(<Turtle x={10} y={10} angle={10} />);
-    expect(polygon()).not.toBeNull();
-    expect(polygon().getAttribute("points")).toEqual(
-      "5,15, 10,3, 15,15"
-    );
-  });
-
-  it("sets a stroke width of 2", () => {
-    renderSvg(<Turtle x={10} y={10} angle={10} />);
-    expect(
-      polygon().getAttribute("stroke-width")
-    ).toEqual("2");
-  });
-
-  it("sets a stroke color of black", () => {
-    renderSvg(<Turtle x={10} y={10} angle={10} />);
-    expect(polygon().getAttribute("stroke")).toEqual(
-      "black"
-    );
-  });
-
-  it("sets a fill of green", () => {
-    renderSvg(<Turtle x={10} y={10} angle={10} />);
-    expect(polygon().getAttribute("fill")).toEqual(
-      "green"
-    );
-  });
-
-  it("sets a transform with the angle", () => {
-    renderSvg(<Turtle x={10} y={20} angle={30} />);
-    expect(
-      polygon().getAttribute("transform")
-    ).toEqual("rotate(120, 10, 20)");
-  });
-});
 
 describe("Drawing", () => {
   beforeEach(() => {
@@ -94,7 +51,6 @@ describe("Drawing", () => {
   const svg = () => element("svg");
   const line = () => element("line");
   const allLines = () => elements("line");
-  const polygon = () => element("polygon");
 
   it("renders an svg inside div#viewport", () => {
     renderWithStore(<Drawing />, {
@@ -178,18 +134,21 @@ describe("Drawing", () => {
     expect(line()).toBeNull();
   });
 
-  it("renders a Turtle at the current turtle position", async () => {
+  it("renders a Turtle within the svg", () => {
+    renderWithStore(<Drawing />);
+    expect(
+      element("svg > div#turtle")
+    ).not.toBeNull();
+  });
+
+  it("passes the turtle x, y and angle as props to Turtle", () => {
     const turtle = { x: 10, y: 20, angle: 30 };
     renderWithStore(<Drawing />, {
       script: { drawCommands: [], turtle },
     });
-
-    expect(polygon()).not.toBeNull();
-    expect(polygon().getAttribute("points")).toEqual(
-      "5,25, 10,13, 15,25"
+    expect(Turtle).toBeCalledWith(
+      { x: 10, y: 20, angle: 30 },
+      {}
     );
-    expect(
-      polygon().getAttribute("transform")
-    ).toEqual("rotate(120, 10, 20)");
   });
 });

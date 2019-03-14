@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 
 const submitEditLine = (text) => ({
@@ -6,9 +6,15 @@ const submitEditLine = (text) => ({
   text,
 });
 
+const promptHasFocused = () => ({ type: "PROMPT_HAS_FOCUSED" });
+
 export const Prompt = () => {
   const nextInstructionId = useSelector(
     ({ script: { nextInstructionId } }) => nextInstructionId
+  );
+  const promptFocusRequest = useSelector(
+    ({ environment: { promptFocusRequest } }) =>
+      promptFocusRequest
   );
   const dispatch = useDispatch();
 
@@ -42,6 +48,17 @@ export const Prompt = () => {
     setHeight(20);
   }
 
+  const inputRef = useRef();
+
+  useEffect(() => {
+    inputRef.current.focus();
+  }, [inputRef]);
+
+  useEffect(() => {
+    inputRef.current.focus();
+    dispatch(promptHasFocused());
+  }, [promptFocusRequest]);
+
   return (
     <tbody key="prompt">
       <tr>
@@ -50,6 +67,7 @@ export const Prompt = () => {
           <textarea
             onScroll={handleScroll}
             value={editPrompt}
+            ref={inputRef}
             style={{ height: height }}
             onChange={handleChange}
             onKeyPress={handleKeyPress}

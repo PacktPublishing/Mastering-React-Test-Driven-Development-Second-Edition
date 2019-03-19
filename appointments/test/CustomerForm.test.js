@@ -24,6 +24,15 @@ describe("CustomerForm", () => {
     initializeReactContainer();
   });
 
+  const spy = () => {
+    let receivedArguments;
+    return {
+      fn: (...args) => (receivedArguments = args),
+      receivedArguments: () => receivedArguments,
+      receivedArgument: (n) => receivedArguments[n],
+    };
+  };
+
   it("renders a form", () => {
     render(<CustomerForm original={blankCustomer} />);
     expect(form()).not.toBeNull();
@@ -67,17 +76,16 @@ describe("CustomerForm", () => {
 
   const itSubmitsExistingValue = (fieldName, value) =>
     it("saves existing value when submitted", () => {
-      expect.hasAssertions();
       const customer = { [fieldName]: value };
+      const submitSpy = spy();
       render(
         <CustomerForm
           original={customer}
-          onSubmit={(props) =>
-            expect(props[fieldName]).toEqual(value)
-          }
+          onSubmit={submitSpy.fn}
         />
       );
       click(submitButton());
+      expect(submitSpy).toBeCalledWith(customer);
     });
 
   const itSubmitsNewValue = (fieldName, value) =>

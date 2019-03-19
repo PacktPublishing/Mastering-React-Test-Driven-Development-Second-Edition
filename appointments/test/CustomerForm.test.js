@@ -12,6 +12,11 @@ import {
   submitButton,
   labelFor,
 } from "./reactTestExtensions";
+import { bodyOfLastFetchRequest } from "./spyHelpers";
+import {
+  fetchResponseOk,
+  fetchResponseError,
+} from "./builders/fetch";
 import { CustomerForm } from "../src/CustomerForm";
 
 describe("CustomerForm", () => {
@@ -27,19 +32,6 @@ describe("CustomerForm", () => {
       .spyOn(global, "fetch")
       .mockResolvedValue(fetchResponseOk({}));
   });
-
-  const bodyOfLastFetchRequest = () => {
-    const allCalls = global.fetch.mock.calls;
-    const lastCall = allCalls[allCalls.length - 1];
-    return JSON.parse(lastCall[1].body);
-  };
-
-  const fetchResponseOk = (body) => ({
-    ok: true,
-    json: () => Promise.resolve(body),
-  });
-
-  const fetchResponseError = () => ({ ok: false });
 
   it("renders a form", () => {
     render(<CustomerForm original={blankCustomer} />);

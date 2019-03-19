@@ -5,7 +5,8 @@ import {
   element,
   form,
   field,
-  click,
+  clickAndWait,
+  submitAndWait,
   change,
   submit,
   submitButton,
@@ -26,6 +27,7 @@ describe("CustomerForm", () => {
     initializeReactContainer();
     fetchSpy = spy();
     global.fetch = fetchSpy.fn;
+    fetchSpy.stubReturnValue(fetchResponseOk({}));
   });
 
   afterEach(() => {
@@ -33,16 +35,31 @@ describe("CustomerForm", () => {
   });
 
   const spy = () => {
+    let returnValue;
     let receivedArguments;
     return {
-      fn: (...args) => (receivedArguments = args),
+      fn: (...args) => {
+        receivedArguments = args;
+        return returnValue;
+      },
       receivedArguments: () => receivedArguments,
       receivedArgument: (n) => receivedArguments[n],
+      stubReturnValue: (value) =>
+        (returnValue = value),
     };
   };
 
   const bodyOfLastFetchRequest = () =>
     JSON.parse(fetchSpy.receivedArgument(1).body);
+
+  const fetchResponseOk = (body) =>
+    Promise.resolve({
+      ok: true,
+      json: () => Promise.resolve(body),
+    });
+
+  const fetchResponseError = () =>
+    Promise.resolve({ ok: false });
 
   it("renders a form", () => {
     render(<CustomerForm original={blankCustomer} />);
@@ -103,10 +120,15 @@ describe("CustomerForm", () => {
     });
 
   const itSubmitsExistingValue = (fieldName, value) =>
-    it("saves existing value when submitted", () => {
+    it("saves existing value when submitted", async () => {
       const customer = { [fieldName]: value };
-      render(<CustomerForm original={customer} />);
-      click(submitButton());
+      render(
+        <CustomerForm
+          original={customer}
+          onSave={() => {}}
+        />
+      );
+      await clickAndWait(submitButton());
 
       expect(bodyOfLastFetchRequest()).toMatchObject(
         customer
@@ -114,12 +136,15 @@ describe("CustomerForm", () => {
     });
 
   const itSubmitsNewValue = (fieldName, value) =>
-    it("saves new value when submitted", () => {
+    it("saves new value when submitted", async () => {
       render(
-        <CustomerForm original={blankCustomer} />
+        <CustomerForm
+          original={blankCustomer}
+          onSave={() => {}}
+        />
       );
       change(field(fieldName), value);
-      click(submitButton());
+      await clickAndWait(submitButton());
 
       expect(bodyOfLastFetchRequest()).toMatchObject({
         [fieldName]: value,
@@ -168,17 +193,25 @@ describe("CustomerForm", () => {
     itSubmitsNewValue("phoneNumber", "67890");
   });
 
-  it("prevents the default action when submitting the form", () => {
-    render(<CustomerForm original={blankCustomer} />);
-
-    const event = submit(form());
-
+  it("prevents the default action when submitting the form", async () => {
+    render(
+      <CustomerForm
+        original={blankCustomer}
+        onSave={() => {}}
+      />
+    );
+    const event = await submitAndWait(form());
     expect(event.defaultPrevented).toBe(true);
   });
 
-  it("sends HTTP request to POST /customers when submitting data", () => {
-    render(<CustomerForm original={blankCustomer} />);
-    click(submitButton());
+  it("sends HTTP request to POST /customers when submitting data", async () => {
+    render(
+      <CustomerForm
+        original={blankCustomer}
+        onSave={() => {}}
+      />
+    );
+    await clickAndWait(submitButton());
 
     expect(fetchSpy).toBeCalledWith(
       "/customers",
@@ -188,9 +221,14 @@ describe("CustomerForm", () => {
     );
   });
 
-  it("calls fetch with correct configuration", () => {
-    render(<CustomerForm original={blankCustomer} />);
-    click(submitButton());
+  it("calls fetch with correct configuration", async () => {
+    render(
+      <CustomerForm
+        original={blankCustomer}
+        onSave={() => {}}
+      />
+    );
+    await clickAndWait(submitButton());
 
     expect(fetchSpy).toBeCalledWith(
       expect.anything(),
@@ -200,6 +238,62 @@ describe("CustomerForm", () => {
           "Content-Type": "application/json",
         },
       })
+    );
+  });
+
+  it("notifies onSave when form is submitted", async () => {
+    const customer = { id: 123 };
+    fetchSpy.stubReturnValue(
+      fetchResponseOk(customer)
+    );
+    const saveSpy = spy();
+
+    render(
+      <CustomerForm
+        original={customer}
+        onSave={saveSpy.fn}
+      />
+    );
+    await clickAndWait(submitButton());
+
+    expect(saveSpy).toBeCalledWith(customer);
+  });
+
+  it("does not notify onSave if the POST request returns an error", async () => {
+    fetchSpy.stubReturnValue(fetchResponseError());
+    const saveSpy = spy();
+
+    render(
+      <CustomerForm
+        original={blankCustomer}
+        onSave={saveSpy.fn}
+      />
+    );
+    await clickAndWait(submitButton());
+
+    expect(saveSpy).not.toBeCalledWith();
+  });
+
+  it("renders an alert space", async () => {
+    render(<CustomerForm original={blankCustomer} />);
+    expect(element("[role=alert]")).not.toBeNull();
+  });
+
+  it("renders error message when fetch call fails", async () => {
+    fetchSpy.stubReturnValue(fetchResponseError());
+
+    render(<CustomerForm original={blankCustomer} />);
+    await clickAndWait(submitButton());
+
+    expect(element("[role=alert]")).toContainText(
+      "error occurred"
+    );
+  });
+
+  it("initially has no text in the alert space", async () => {
+    render(<CustomerForm original={blankCustomer} />);
+    expect(element("[role=alert]")).not.toContainText(
+      "error occurred"
     );
   });
 });

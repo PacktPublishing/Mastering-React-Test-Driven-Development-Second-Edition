@@ -13,6 +13,9 @@ export const render = (component) =>
 
 export const click = (element) => act(() => element.click());
 
+export const clickAndWait = async (element) =>
+  act(async () => click(element));
+
 export const submit = (formElement) => {
   const event = new Event("submit", {
     bubbles: true,
@@ -21,6 +24,9 @@ export const submit = (formElement) => {
   act(() => formElement.dispatchEvent(event));
   return event;
 };
+
+export const submitAndWait = async (formElement) =>
+  act(async () => submit(formElement));
 
 const originalValueProperty = (reactElement) => {
   const prototype = Object.getPrototypeOf(reactElement);

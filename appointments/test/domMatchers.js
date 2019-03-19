@@ -18,6 +18,7 @@ expect.extend({
         message: () => "Spy was not called.",
       };
     }
+
     const notMatch = !this.equals(
       received.receivedArguments(),
       expectedArguments

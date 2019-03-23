@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useCallback } from "react";
 
 const timeIncrements = (numTimes, startTime, increment) =>
   Array(numTimes)
@@ -44,15 +44,20 @@ const RadioButtonIfAvailable = ({
   availableTimeSlots,
   date,
   timeSlot,
+  checkedTimeSlot,
+  handleChange,
 }) => {
   const startsAt = mergeDateAndTime(date, timeSlot);
-  if (
-    availableTimeSlots.some(
-      (timeSlot) => timeSlot.startsAt === startsAt
-    )
-  ) {
+  if (availableTimeSlots.some((a) => a.startsAt === startsAt)) {
+    const isChecked = startsAt === checkedTimeSlot;
     return (
-      <input name="startsAt" type="radio" value={startsAt} />
+      <input
+        name="startsAt"
+        type="radio"
+        value={startsAt}
+        checked={isChecked}
+        onChange={handleChange}
+      />
     );
   }
   return null;
@@ -63,6 +68,8 @@ const TimeSlotTable = ({
   salonClosesAt,
   today,
   availableTimeSlots,
+  checkedTimeSlot,
+  handleChange,
 }) => {
   const dates = weeklyDateValues(today);
   const timeSlots = dailyTimeSlots(salonOpensAt, salonClosesAt);
@@ -86,6 +93,8 @@ const TimeSlotTable = ({
                   availableTimeSlots={availableTimeSlots}
                   date={date}
                   timeSlot={timeSlot}
+                  checkedTimeSlot={checkedTimeSlot}
+                  handleChange={handleChange}
                 />
               </td>
             ))}
@@ -103,28 +112,51 @@ export const AppointmentForm = ({
   salonClosesAt,
   today,
   availableTimeSlots,
-}) => (
-  <form>
-    <label htmlFor="service">Salon service</label>
-    <select
-      name="service"
-      id="service"
-      value={original.service}
-      readOnly
-    >
-      <option />
-      {selectableServices.map((s) => (
-        <option key={s}>{s}</option>
-      ))}
-    </select>
-    <TimeSlotTable
-      salonOpensAt={salonOpensAt}
-      salonClosesAt={salonClosesAt}
-      today={today}
-      availableTimeSlots={availableTimeSlots}
-    />
-  </form>
-);
+  onSubmit,
+}) => {
+  const [appointment, setAppointment] = useState(original);
+
+  const handleStartsAtChange = useCallback(
+    ({ target: { value } }) =>
+      setAppointment((appointment) => ({
+        ...appointment,
+        startsAt: parseInt(value),
+      })),
+    []
+  );
+
+  const handleSubmit = (event) => {
+    event.preventDefault();
+    onSubmit(appointment);
+  };
+
+  return (
+    <form onSubmit={handleSubmit}>
+      <label htmlFor="service">Salon service</label>
+      <select
+        name="service"
+        id="service"
+        value={original.service}
+        readOnly
+      >
+        <option />
+        {selectableServices.map((s) => (
+          <option key={s}>{s}</option>
+        ))}
+      </select>
+
+      <TimeSlotTable
+        salonOpensAt={salonOpensAt}
+        salonClosesAt={salonClosesAt}
+        today={today}
+        availableTimeSlots={availableTimeSlots}
+        checkedTimeSlot={appointment.startsAt}
+        handleChange={handleStartsAtChange}
+      />
+      <input type="submit" value="Add" />
+    </form>
+  );
+};
 
 AppointmentForm.defaultProps = {
   today: new Date(),

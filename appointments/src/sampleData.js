@@ -1,5 +1,7 @@
 import { faker } from "@faker-js/faker";
 
+const randomInt = (range) => Math.floor(Math.random() * range);
+
 Array.prototype.unique = function () {
   return this.filter(function (value, index, self) {
     return self.indexOf(value) === index;
@@ -7,15 +9,13 @@ Array.prototype.unique = function () {
 };
 
 Array.prototype.pickRandom = function () {
-  return this[Math.floor(Math.random() * this.length)];
+  return this[randomInt(this.length)];
 };
 
 const today = new Date();
 const at = (hours) => today.setHours(hours, 0);
 
-const stylists = [0, 1, 2, 3, 4, 5, 6]
-  .map(() => faker.name.firstName())
-  .unique();
+const stylists = ["Ashley", "Jo", "Pat", "Sam"];
 
 const services = [
   "Cut",
@@ -65,6 +65,10 @@ const buildTimeSlots = () => {
       const halfHoursToAdd = halfHour * 30 * 60 * 1000;
       return {
         startsAt: startTime + daysToAdd + halfHoursToAdd,
+        stylists: pickMany(
+          stylists,
+          randomInt(stylists.length)
+        ),
       };
     });
   });

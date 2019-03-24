@@ -1,27 +1,18 @@
 import React, { useState } from "react";
+import {
+  required,
+  match,
+  list,
+  hasError,
+  validateMany,
+  anyErrors,
+} from "./formValidation";
 
 const Error = ({ hasError }) => (
   <p role="alert">
     {hasError ? "An error occurred during save." : ""}
   </p>
 );
-
-const required = (description) => (value) =>
-  !value || value.trim() === ""
-    ? description
-    : undefined;
-
-const match = (re, description) => (value) =>
-  !value.match(re) ? description : undefined;
-
-const list =
-  (...validators) =>
-  (value) =>
-    validators.reduce(
-      (result, validator) =>
-        result || validator(value),
-      undefined
-    );
 
 export const CustomerForm = ({
   original,
@@ -52,35 +43,18 @@ export const CustomerForm = ({
   };
 
   const handleBlur = ({ target }) => {
-    const result = validators[target.name](
-      target.value
-    );
+    const result = validateMany(validators, {
+      [target.name]: target.value,
+    });
     setValidationErrors({
       ...validationErrors,
-      [target.name]: result,
+      ...result,
     });
   };
 
-  const validateMany = (fields) =>
-    Object.entries(fields).reduce(
-      (result, [name, value]) => ({
-        ...result,
-        [name]: validators[name](value),
-      }),
-      {}
-    );
-
-  const hasError = (fieldName) =>
-    validationErrors[fieldName] !== undefined;
-
-  const anyErrors = (errors) =>
-    Object.values(errors).some(
-      (error) => error !== undefined
-    );
-
   const renderError = (fieldName) => (
     <span id={`${fieldName}Error`} role="alert">
-      {hasError(fieldName)
+      {hasError(validationErrors, fieldName)
         ? validationErrors[fieldName]
         : ""}
     </span>
@@ -88,7 +62,10 @@ export const CustomerForm = ({
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    const validationResult = validateMany(customer);
+    const validationResult = validateMany(
+      validators,
+      customer
+    );
     if (!anyErrors(validationResult)) {
       const result = await global.fetch(
         "/customers",

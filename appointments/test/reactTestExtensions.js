@@ -47,6 +47,13 @@ export const change = (target, value) => {
   act(() => target.dispatchEvent(event));
 };
 
+export const withFocus = (target, fn) =>
+  act(() => {
+    target.focus();
+    fn();
+    target.blur();
+  });
+
 export const element = (selector) =>
   document.querySelector(selector);
 

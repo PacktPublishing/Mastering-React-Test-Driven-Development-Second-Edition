@@ -3,6 +3,7 @@ import {
   initializeReactContainer,
   render,
   element,
+  elements,
   form,
   field,
   clickAndWait,
@@ -11,6 +12,7 @@ import {
   submit,
   submitButton,
   labelFor,
+  textOf,
   withFocus,
 } from "./reactTestExtensions";
 import { bodyOfLastFetchRequest } from "./spyHelpers";
@@ -19,7 +21,10 @@ import {
   fetchResponseError,
 } from "./builders/fetch";
 import { CustomerForm } from "../src/CustomerForm";
-import { blankCustomer } from "./builders/customer";
+import {
+  blankCustomer,
+  validCustomer,
+} from "./builders/customer";
 
 describe("CustomerForm", () => {
   beforeEach(() => {
@@ -72,7 +77,7 @@ describe("CustomerForm", () => {
 
   const itSubmitsExistingValue = (fieldName, value) =>
     it("saves existing value when submitted", async () => {
-      const customer = { [fieldName]: value };
+      const customer = { ...validCustomer, [fieldName]: value };
       render(
         <CustomerForm original={customer} onSave={() => {}} />
       );
@@ -85,7 +90,7 @@ describe("CustomerForm", () => {
     it("saves new value when submitted", async () => {
       render(
         <CustomerForm
-          original={blankCustomer}
+          original={validCustomer}
           onSave={() => {}}
         />
       );
@@ -127,7 +132,7 @@ describe("CustomerForm", () => {
   it("prevents the default action when submitting the form", async () => {
     render(
       <CustomerForm
-        original={blankCustomer}
+        original={validCustomer}
         onSave={() => {}}
       />
     );
@@ -138,7 +143,7 @@ describe("CustomerForm", () => {
   it("sends HTTP request to POST /customers when submitting data", async () => {
     render(
       <CustomerForm
-        original={blankCustomer}
+        original={validCustomer}
         onSave={() => {}}
       />
     );
@@ -155,7 +160,7 @@ describe("CustomerForm", () => {
   it("calls fetch with correct configuration", async () => {
     render(
       <CustomerForm
-        original={blankCustomer}
+        original={validCustomer}
         onSave={() => {}}
       />
     );
@@ -176,7 +181,7 @@ describe("CustomerForm", () => {
     const saveSpy = jest.fn();
 
     render(
-      <CustomerForm original={blankCustomer} onSave={saveSpy} />
+      <CustomerForm original={validCustomer} onSave={saveSpy} />
     );
     await clickAndWait(submitButton());
 
@@ -202,10 +207,9 @@ describe("CustomerForm", () => {
 
     it("does not notify onSave if the POST request returns an error", async () => {
       const saveSpy = jest.fn();
-
       render(
         <CustomerForm
-          original={blankCustomer}
+          original={validCustomer}
           onSave={saveSpy}
         />
       );
@@ -214,7 +218,7 @@ describe("CustomerForm", () => {
     });
 
     it("renders error message when fetch call fails", async () => {
-      render(<CustomerForm original={blankCustomer} />);
+      render(<CustomerForm original={validCustomer} />);
       await clickAndWait(submitButton());
 
       expect(element("[role=alert]")).toContainText(
@@ -226,7 +230,7 @@ describe("CustomerForm", () => {
       global.fetch.mockResolvedValue(fetchResponseOk());
       render(
         <CustomerForm
-          original={blankCustomer}
+          original={validCustomer}
           onSave={() => {}}
         />
       );
@@ -239,13 +243,26 @@ describe("CustomerForm", () => {
     });
   });
 
+  it("does not submit the form when there are validation errors", async () => {
+    render(<CustomerForm original={blankCustomer} />);
+
+    await clickAndWait(submitButton());
+    expect(global.fetch).not.toBeCalled();
+  });
+
   const errorFor = (fieldName) =>
     element(`#${fieldName}Error[role=alert]`);
+
+  it("renders validation errors after submission fails", async () => {
+    render(<CustomerForm original={blankCustomer} />);
+    await clickAndWait(submitButton());
+    expect(textOf(elements("[role=alert]"))).not.toEqual("");
+  });
 
   describe("validation", () => {
     const itRendersAlertForFieldValidation = (fieldName) => {
       it(`renders an alert space for ${fieldName} validation errors`, async () => {
-        render(<CustomerForm original={blankCustomer} />);
+        render(<CustomerForm original={validCustomer} />);
         expect(errorFor(fieldName)).not.toBeNull();
       });
     };
@@ -263,7 +280,7 @@ describe("CustomerForm", () => {
 
     const itInitiallyHasNoTextInTheAlertSpace = (fieldName) => {
       it(`initially has no text in the ${fieldName} field alert space`, async () => {
-        render(<CustomerForm original={blankCustomer} />);
+        render(<CustomerForm original={validCustomer} />);
         expect(errorFor(fieldName).textContent).toEqual("");
       });
     };
@@ -274,7 +291,7 @@ describe("CustomerForm", () => {
       description
     ) => {
       it(`displays error after blur when ${fieldName} field is '${value}'`, () => {
-        render(<CustomerForm original={blankCustomer} />);
+        render(<CustomerForm original={validCustomer} />);
 
         withFocus(field(fieldName), () =>
           change(field(fieldName), value)
@@ -318,7 +335,7 @@ describe("CustomerForm", () => {
     );
 
     it("accepts standard phone number characters when validating", () => {
-      render(<CustomerForm original={blankCustomer} />);
+      render(<CustomerForm original={validCustomer} />);
 
       withFocus(field("phoneNumber"), () =>
         change(field("phoneNumber"), "0123456789+()- ")

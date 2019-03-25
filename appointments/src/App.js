@@ -2,6 +2,7 @@ import React, { useState, useCallback } from "react";
 import { AppointmentFormLoader } from "./AppointmentFormLoader";
 import { AppointmentsDayViewLoader } from "./AppointmentsDayViewLoader";
 import { CustomerForm } from "./CustomerForm";
+import { CustomerSearch } from "./CustomerSearch";
 
 const blankCustomer = {
   firstName: "",
@@ -23,12 +24,19 @@ export const App = () => {
     setCustomer(customer);
     setView("addAppointment");
   }, []);
+
   const transitionToAddCustomer = useCallback(
     () => setView("addCustomer"),
     []
   );
+
   const transitionToDayView = useCallback(
     () => setView("dayView"),
+    []
+  );
+
+  const transitionToSearchCustomers = useCallback(
+    () => setView("searchCustomers"),
     []
   );
 
@@ -40,6 +48,8 @@ export const App = () => {
           onSave={transitionToAddAppointment}
         />
       );
+    case "searchCustomers":
+      return <CustomerSearch />;
     case "addAppointment":
       return (
         <AppointmentFormLoader
@@ -60,6 +70,14 @@ export const App = () => {
                 onClick={transitionToAddCustomer}
               >
                 Add customer and appointment
+              </button>
+            </li>
+            <li>
+              <button
+                type="button"
+                onClick={transitionToSearchCustomers}
+              >
+                Search customers
               </button>
             </li>
           </menu>

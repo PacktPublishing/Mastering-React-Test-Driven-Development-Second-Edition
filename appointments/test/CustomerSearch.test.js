@@ -184,4 +184,27 @@ describe("CustomerSearch", () => {
       expect.anything()
     );
   });
+
+  it("displays provided action buttons for each customer", async () => {
+    const actionSpy = jest.fn(() => "actions");
+    global.fetch.mockResolvedValue(
+      fetchResponseOk(oneCustomer)
+    );
+    await renderAndWait(
+      <CustomerSearch renderCustomerActions={actionSpy} />
+    );
+    const rows = elements("table tbody td");
+    expect(rows[rows.length - 1]).toContainText("actions");
+  });
+
+  it("passes customer to the renderCustomerActions prop", async () => {
+    const actionSpy = jest.fn(() => "actions");
+    global.fetch.mockResolvedValue(
+      fetchResponseOk(oneCustomer)
+    );
+    await renderAndWait(
+      <CustomerSearch renderCustomerActions={actionSpy} />
+    );
+    expect(actionSpy).toBeCalledWith(oneCustomer[0]);
+  });
 });

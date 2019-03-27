@@ -7,6 +7,7 @@ import {
   element,
   elements,
   textOf,
+  buttonWithLabel,
 } from "./reactTestExtensions";
 import { CustomerSearch } from "../src/CustomerSearch";
 import { fetchResponseOk } from "./builders/fetch";
@@ -19,6 +20,12 @@ const twoCustomers = [
   { id: 1, firstName: "A", lastName: "B", phoneNumber: "1" },
   { id: 2, firstName: "C", lastName: "D", phoneNumber: "2" },
 ];
+
+const tenCustomers = Array.from("0123456789", (id) => ({ id }));
+
+const anotherTenCustomers = Array.from("ABCDEFGHIJ", (id) => ({
+  id,
+}));
 
 describe("CustomerSearch", () => {
   beforeEach(() => {
@@ -66,5 +73,80 @@ describe("CustomerSearch", () => {
     await renderAndWait(<CustomerSearch />);
     const rows = elements("table tbody tr");
     expect(rows[1].childNodes[0]).toContainText("C");
+  });
+
+  it("has a next button", async () => {
+    await renderAndWait(<CustomerSearch />);
+    expect(buttonWithLabel("Next")).not.toBeNull();
+  });
+
+  it("requests next page of data when next button is clicked", async () => {
+    global.fetch.mockResolvedValue(
+      fetchResponseOk(tenCustomers)
+    );
+    await renderAndWait(<CustomerSearch />);
+    await clickAndWait(buttonWithLabel("Next"));
+    expect(global.fetch).toHaveBeenLastCalledWith(
+      "/customers?after=9",
+      expect.anything()
+    );
+  });
+
+  it("displays next page of data when next button is clicked", async () => {
+    const nextCustomer = [{ id: "next", firstName: "Next" }];
+    global.fetch
+      .mockResolvedValueOnce(fetchResponseOk(tenCustomers))
+      .mockResolvedValue(fetchResponseOk(nextCustomer));
+    await renderAndWait(<CustomerSearch />);
+    await clickAndWait(buttonWithLabel("Next"));
+    expect(elements("tbody tr")).toHaveLength(1);
+    expect(elements("td")[0]).toContainText("Next");
+  });
+
+  it("has a previous button", async () => {
+    await renderAndWait(<CustomerSearch />);
+    expect(buttonWithLabel("Previous")).not.toBeNull();
+  });
+
+  it("moves back to first page when previous button is clicked", async () => {
+    global.fetch.mockResolvedValue(
+      fetchResponseOk(tenCustomers)
+    );
+    await renderAndWait(<CustomerSearch />);
+    await clickAndWait(buttonWithLabel("Next"));
+    await clickAndWait(buttonWithLabel("Previous"));
+    expect(global.fetch).toHaveBeenLastCalledWith(
+      "/customers",
+      expect.anything()
+    );
+  });
+
+  it("moves back one page when clicking previous after multiple clicks of the next button", async () => {
+    global.fetch
+      .mockResolvedValueOnce(fetchResponseOk(tenCustomers))
+      .mockResolvedValue(fetchResponseOk(anotherTenCustomers));
+    await renderAndWait(<CustomerSearch />);
+    await clickAndWait(buttonWithLabel("Next"));
+    await clickAndWait(buttonWithLabel("Next"));
+    await clickAndWait(buttonWithLabel("Previous"));
+    expect(global.fetch).toHaveBeenLastCalledWith(
+      "/customers?after=9",
+      expect.anything()
+    );
+  });
+
+  it("moves back multiple pages", async () => {
+    global.fetch.mockResolvedValue(
+      fetchResponseOk(tenCustomers)
+    );
+    await renderAndWait(<CustomerSearch />);
+    await clickAndWait(buttonWithLabel("Next"));
+    await clickAndWait(buttonWithLabel("Next"));
+    await clickAndWait(buttonWithLabel("Previous"));
+    await clickAndWait(buttonWithLabel("Previous"));
+    expect(global.fetch).toHaveBeenLastCalledWith(
+      "/customers",
+      expect.anything()
+    );
   });
 });

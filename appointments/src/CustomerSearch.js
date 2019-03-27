@@ -4,6 +4,22 @@ import React, {
   useState,
 } from "react";
 
+const SearchButtons = ({
+  handleNext,
+  handlePrevious,
+}) => (
+  <menu>
+    <li>
+      <button onClick={handlePrevious}>
+        Previous
+      </button>
+    </li>
+    <li>
+      <button onClick={handleNext}>Next</button>
+    </li>
+  </menu>
+);
+
 const CustomerRow = ({ customer }) => (
   <tr>
     <td>{customer.firstName}</td>
@@ -15,11 +31,28 @@ const CustomerRow = ({ customer }) => (
 
 export const CustomerSearch = () => {
   const [customers, setCustomers] = useState([]);
+  const [queryStrings, setQueryStrings] = useState(
+    []
+  );
+
+  const handleNext = useCallback(() => {
+    const after = customers[customers.length - 1].id;
+    const queryString = `?after=${after}`;
+    setQueryStrings([...queryStrings, queryString]);
+  }, [customers, queryStrings]);
+
+  const handlePrevious = useCallback(
+    () => setQueryStrings(queryStrings.slice(0, -1)),
+    [queryStrings]
+  );
 
   useEffect(() => {
     const fetchData = async () => {
+      const queryString =
+        queryStrings[queryStrings.length - 1] || "";
+
       const result = await global.fetch(
-        "/customers",
+        `/customers${queryString}`,
         {
           method: "GET",
           credentials: "same-origin",
@@ -32,26 +65,32 @@ export const CustomerSearch = () => {
     };
 
     fetchData();
-  }, []);
+  }, [queryStrings]);
 
   return (
-    <table>
-      <thead>
-        <tr>
-          <th>First name</th>
-          <th>Last name</th>
-          <th>Phone number</th>
-          <th>Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {customers.map((customer) => (
-          <CustomerRow
-            customer={customer}
-            key={customer.id}
-          />
-        ))}
-      </tbody>
-    </table>
+    <>
+      <SearchButtons
+        handleNext={handleNext}
+        handlePrevious={handlePrevious}
+      />
+      <table>
+        <thead>
+          <tr>
+            <th>First name</th>
+            <th>Last name</th>
+            <th>Phone number</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          {customers.map((customer) => (
+            <CustomerRow
+              customer={customer}
+              key={customer.id}
+            />
+          ))}
+        </tbody>
+      </table>
+    </>
   );
 };

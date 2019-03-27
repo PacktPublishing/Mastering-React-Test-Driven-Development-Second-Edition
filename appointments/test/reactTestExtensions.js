@@ -92,3 +92,8 @@ export const propsOf = (mockComponent) => {
     ];
   return lastCall[0];
 };
+
+export const buttonWithLabel = (label) =>
+  elements("button").find(
+    ({ textContent }) => textContent === label
+  );

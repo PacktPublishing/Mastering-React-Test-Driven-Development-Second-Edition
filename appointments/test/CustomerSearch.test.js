@@ -32,6 +32,13 @@ const lessThanTenCustomers = Array.from("0123456", (id) => ({
   id: id,
 }));
 
+const twentyCustomers = Array.from(
+  "0123456789ABCDEFGHIJ",
+  (id) => ({
+    id: id,
+  })
+);
+
 describe("CustomerSearch", () => {
   beforeEach(() => {
     initializeReactContainer();
@@ -238,5 +245,61 @@ describe("CustomerSearch", () => {
     expect(
       buttonWithLabel("Next").getAttribute("disabled")
     ).not.toBeNull();
+  });
+
+  it("has a button with a label of 10 that is initially toggled", async () => {
+    await renderAndWait(<CustomerSearch />);
+    const button = buttonWithLabel("10");
+    expect(button.className).toContain("toggled");
+  });
+
+  [20, 50, 100].forEach((limitSize) => {
+    it(`has a button with a label of ${limitSize} that is initially not toggled`, async () => {
+      await renderAndWait(<CustomerSearch />);
+      const button = buttonWithLabel(limitSize.toString());
+      expect(button).not.toBeNull();
+      expect(button.className).not.toContain("toggled");
+    });
+
+    it(`searches by ${limitSize} records when clicking on ${limitSize}`, async () => {
+      await renderAndWait(<CustomerSearch />);
+      await clickAndWait(buttonWithLabel(limitSize.toString()));
+      expect(global.fetch).toHaveBeenLastCalledWith(
+        `/customers?limit=${limitSize}`,
+        expect.anything()
+      );
+    });
+  });
+
+  it("searches by 10 records when clicking on 10", async () => {
+    await renderAndWait(<CustomerSearch />);
+    await clickAndWait(buttonWithLabel("20"));
+    await clickAndWait(buttonWithLabel("10"));
+    expect(global.fetch).toHaveBeenLastCalledWith(
+      "/customers",
+      expect.anything()
+    );
+  });
+
+  it("next button still enabled if limit changes", async () => {
+    global.fetch.mockResolvedValue(
+      fetchResponseOk(twentyCustomers)
+    );
+    await renderAndWait(<CustomerSearch />);
+    await clickAndWait(buttonWithLabel("20"));
+    expect(
+      buttonWithLabel("Next").getAttribute("disabled")
+    ).toBeNull();
+  });
+
+  it("changing limit maintains current page", async () => {
+    global.fetch.mockResolvedValue(fetchResponseOk(tenCustomers));
+    await renderAndWait(<CustomerSearch />);
+    await clickAndWait(buttonWithLabel("Next"));
+    await clickAndWait(buttonWithLabel("20"));
+    expect(global.fetch).toHaveBeenLastCalledWith(
+      "/customers?after=9&limit=20",
+      expect.anything()
+    );
   });
 });

@@ -1,13 +1,53 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { objectToQueryString } from "./objectToQueryString";
 
+const ToggleButton = ({ onClick, toggled, children }) => (
+  <button onClick={onClick} className={toggled ? "toggled" : ""}>
+    {children}
+    </button>
+  );
+
 const SearchButtons = ({
+  handleLimit,
   handleNext,
   handlePrevious,
+  limit,
   hasNext,
   hasPrevious,
 }) => (
   <menu>
+    <li>
+      <ToggleButton
+        onClick={() => handleLimit(10)}
+        toggled={limit === 10}
+      >
+        10
+      </ToggleButton>
+    </li>
+    <li>
+      <ToggleButton
+        onClick={() => handleLimit(20)}
+        toggled={limit === 20}
+      >
+        20
+      </ToggleButton>
+    </li>
+    <li>
+      <ToggleButton
+        onClick={() => handleLimit(50)}
+        toggled={limit === 50}
+      >
+        50
+      </ToggleButton>
+    </li>
+    <li>
+      <ToggleButton
+        onClick={() => handleLimit(100)}
+        toggled={limit === 100}
+      >
+        100
+      </ToggleButton>
+    </li>
     <li>
       <button onClick={handlePrevious} disabled={!hasPrevious}>
         Previous
@@ -34,6 +74,7 @@ export const CustomerSearch = ({ renderCustomerActions }) => {
   const [customers, setCustomers] = useState([]);
   const [lastRowIds, setLastRowIds] = useState([]);
   const [searchTerm, setSearchTerm] = useState("");
+  const [limit, setLimit] = useState(10);
 
   const handleSearchTextChanged = ({ target: { value } }) =>
     setSearchTerm(value);
@@ -54,6 +95,7 @@ export const CustomerSearch = ({ renderCustomerActions }) => {
       const queryString = objectToQueryString({
         after,
         searchTerm,
+        limit: limit === 10 ? "" : limit,
       });
 
       const result = await global.fetch(
@@ -68,9 +110,9 @@ export const CustomerSearch = ({ renderCustomerActions }) => {
     };
 
     fetchData();
-  }, [lastRowIds, searchTerm]);
+  }, [lastRowIds, searchTerm, limit]);
 
-  const hasNext = customers.length === 10;
+  const hasNext = customers.length === limit;
   const hasPrevious = lastRowIds.length > 0;
 
   return (
@@ -85,6 +127,8 @@ export const CustomerSearch = ({ renderCustomerActions }) => {
         handlePrevious={handlePrevious}
         hasNext={hasNext}
         hasPrevious={hasPrevious}
+        handleLimit={setLimit}
+        limit={limit}
       />
       <table>
         <thead>

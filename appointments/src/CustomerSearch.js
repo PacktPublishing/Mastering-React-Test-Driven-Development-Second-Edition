@@ -21,15 +21,25 @@ const searchParams = (after, searchTerm) => {
 const SearchButtons = ({
   handleNext,
   handlePrevious,
+  hasNext,
+  hasPrevious,
 }) => (
   <menu>
     <li>
-      <button onClick={handlePrevious}>
+      <button
+        onClick={handlePrevious}
+        disabled={!hasPrevious}
+      >
         Previous
       </button>
     </li>
     <li>
-      <button onClick={handleNext}>Next</button>
+      <button
+        onClick={handleNext}
+        disabled={!hasNext}
+      >
+        Next
+      </button>
     </li>
   </menu>
 );
@@ -92,6 +102,9 @@ export const CustomerSearch = ({
     fetchData();
   }, [lastRowIds, searchTerm]);
 
+  const hasNext = customers.length === 10;
+  const hasPrevious = lastRowIds.length > 0;
+
   return (
     <>
       <input
@@ -102,6 +115,8 @@ export const CustomerSearch = ({
       <SearchButtons
         handleNext={handleNext}
         handlePrevious={handlePrevious}
+        hasNext={hasNext}
+        hasPrevious={hasPrevious}
       />
       <table>
         <thead>

@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { objectToQueryString } from "../objectToQueryString";
 import { SearchButtons } from "./SearchButtons";
 
@@ -11,24 +11,19 @@ const CustomerRow = ({ customer, renderCustomerActions }) => (
   </tr>
 );
 
-export const CustomerSearch = ({ renderCustomerActions }) => {
+export const CustomerSearch = ({
+  renderCustomerActions,
+  lastRowIds,
+  searchTerm,
+  limit,
+  navigate,
+}) => {
   const [customers, setCustomers] = useState([]);
-  const [lastRowIds, setLastRowIds] = useState([]);
-  const [searchTerm, setSearchTerm] = useState("");
-  const [limit, setLimit] = useState(10);
 
-  const handleSearchTextChanged = ({ target: { value } }) =>
-    setSearchTerm(value);
-
-  const handleNext = useCallback(() => {
-    const currentLastRowId = customers[customers.length - 1].id;
-    setLastRowIds([...lastRowIds, currentLastRowId]);
-  }, [customers, lastRowIds]);
-
-  const handlePrevious = useCallback(
-    () => setLastRowIds(lastRowIds.slice(0, -1)),
-    [lastRowIds]
-  );
+  const handleSearchTextChanged = ({ target: { value } }) => {
+    const params = { limit, searchTerm: value };
+    navigate(objectToQueryString(params));
+  };
 
   useEffect(() => {
     const fetchData = async () => {
@@ -49,12 +44,8 @@ export const CustomerSearch = ({ renderCustomerActions }) => {
       );
       setCustomers(await result.json());
     };
-
     fetchData();
   }, [lastRowIds, searchTerm, limit]);
-
-  const hasNext = customers.length === limit;
-  const hasPrevious = lastRowIds.length > 0;
 
   return (
     <>
@@ -64,12 +55,10 @@ export const CustomerSearch = ({ renderCustomerActions }) => {
         placeholder="Enter filter text"
       />
       <SearchButtons
-        handleNext={handleNext}
-        handlePrevious={handlePrevious}
-        hasNext={hasNext}
-        hasPrevious={hasPrevious}
-        handleLimit={setLimit}
+        customers={customers}
+        searchTerm={searchTerm}
         limit={limit}
+        lastRowIds={lastRowIds}
       />
       <table>
         <thead>
@@ -95,5 +84,6 @@ export const CustomerSearch = ({ renderCustomerActions }) => {
 };
 
 CustomerSearch.defaultProps = {
-  renderCustomerActions: () => {},
+  lastRowIds: [],
+  searchTerm: "",
 };

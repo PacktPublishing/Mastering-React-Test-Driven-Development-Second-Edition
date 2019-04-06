@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {
   required,
   match,
@@ -14,10 +15,22 @@ const Error = ({ hasError }) => (
   </p>
 );
 
-export const CustomerForm = ({ original, onSave }) => {
-  const [submitting, setSubmitting] = useState(false);
+const addCustomerRequest = (customer) => ({
+  type: "ADD_CUSTOMER_REQUEST",
+  customer,
+});
+
+export const CustomerForm = ({ original }) => {
+  const {
+    error,
+    status,
+    validationErrors: serverValidationErrors,
+  } = useSelector(({ customer }) => customer);
+
+  const dispatch = useDispatch();
+
+  const submitting = status === "SUBMITTING";
   const [validationErrors, setValidationErrors] = useState({});
-  const [error, setError] = useState(false);
 
   const [customer, setCustomer] = useState(original);
 
@@ -50,43 +63,28 @@ export const CustomerForm = ({ original, onSave }) => {
     setValidationErrors({ ...validationErrors, ...result });
   };
 
-  const renderError = (fieldName) => (
-    <span id={`${fieldName}Error`} role="alert">
-      {hasError(validationErrors, fieldName)
-        ? validationErrors[fieldName]
-        : ""}
-    </span>
-  );
+  const renderError = (fieldName) => {
+    const allValidationErrors = {
+      ...validationErrors,
+      ...serverValidationErrors,
+    };
+    return (
+      <span id={`${fieldName}Error`} role="alert">
+        {hasError(allValidationErrors, fieldName)
+          ? allValidationErrors[fieldName]
+          : ""}
+      </span>
+    );
+  };
 
   const handleBlur = ({ target }) =>
     validateSingleField(target.name, target.value);
-
-  const doSave = async () => {
-    setSubmitting(true);
-    const result = await global.fetch("/customers", {
-      method: "POST",
-      credentials: "same-origin",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify(customer),
-    });
-    setSubmitting(false);
-    if (result.ok) {
-      setError(false);
-      const customerWithId = await result.json();
-      onSave(customerWithId);
-    } else if (result.status === 422) {
-      const response = await result.json();
-      setValidationErrors(response.errors);
-    } else {
-      setError(true);
-    }
-  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
     const validationResult = validateMany(validators, customer);
     if (!anyErrors(validationResult)) {
-      await doSave();
+      dispatch(addCustomerRequest(customer));
     } else {
       setValidationErrors(validationResult);
     }

@@ -9,6 +9,7 @@ import { AppointmentsDayViewLoader } from "./AppointmentsDayViewLoader";
 import { CustomerForm } from "./CustomerForm";
 import { CustomerSearchRoute } from "./CustomerSearchRoute";
 import { AppointmentFormRoute } from "./AppointmentFormRoute";
+import { CustomerHistoryRoute } from "./CustomerHistoryRoute";
 
 const blankCustomer = {
   firstName: "",
@@ -40,12 +41,20 @@ export const App = () => {
   const transitionToDayView = () => navigate("/");
 
   const searchActions = (customer) => (
-    <Link
-      role="button"
-      to={`/addAppointment?customer=${customer.id}`}
-    >
-      Create appointment
-    </Link>
+    <>
+      <Link
+        role="button"
+        to={`/addAppointment?customer=${customer.id}`}
+      >
+        Create appointment
+      </Link>
+      <Link
+        role="button"
+        to={`/viewHistory?customer=${customer.id}`}
+      >
+        View history
+      </Link>
+    </>
   );
 
   return (
@@ -71,6 +80,10 @@ export const App = () => {
             renderCustomerActions={searchActions}
           />
         }
+      />
+      <Route
+        path="/viewHistory"
+        element={<CustomerHistoryRoute />}
       />
       <Route path="/" element={<MainScreen />} />
     </Routes>

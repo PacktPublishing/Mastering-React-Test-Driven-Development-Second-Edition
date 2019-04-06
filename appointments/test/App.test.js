@@ -20,6 +20,7 @@ import { CustomerForm } from "../src/CustomerForm";
 import { blankCustomer } from "./builders/customer";
 import { blankAppointment } from "./builders/appointment";
 import { CustomerSearchRoute } from "../src/CustomerSearchRoute";
+import { CustomerHistoryRoute } from "../src/CustomerHistoryRoute";
 
 jest.mock("../src/AppointmentFormRoute", () => ({
   AppointmentFormRoute: jest.fn(() => (
@@ -41,14 +42,11 @@ jest.mock("../src/CustomerSearchRoute", () => ({
     <div id="CustomerSearchRoute" />
   )),
 }));
-jest.mock(
-  "../src/CustomerSearch/CustomerSearch",
-  () => ({
-    CustomerSearch: jest.fn(() => (
-      <div id="CustomerSearch" />
-    )),
-  })
-);
+jest.mock("../src/CustomerHistoryRoute", () => ({
+  CustomerHistoryRoute: jest.fn(() => (
+    <div id="CustomerHistoryRoute" />
+  )),
+}));
 
 describe("App", () => {
   beforeEach(() => {
@@ -84,6 +82,13 @@ describe("App", () => {
       location: "/searchCustomers",
     });
     expect(CustomerSearchRoute).toBeRendered();
+  });
+
+  it("renders CustomerHistory at /viewHistory", () => {
+    renderWithRouter(<App />, {
+      location: "/viewHistory?customer=123",
+    });
+    expect(CustomerHistoryRoute).toBeRendered();
   });
 
   const customer = { id: "123" };
@@ -142,6 +147,15 @@ describe("App", () => {
       expect(
         linkFor("/addAppointment?customer=123")
       ).toBeDefined();
+    });
+
+    it("renders a link to the /viewHistory route for each CustomerSearch row", () => {
+      renderWithRouter(<App />);
+      click(linkFor("/searchCustomers"));
+      renderWithRouter(searchFor(customer));
+      expect(
+        linkFor("/viewHistory?customer=123")
+      ).not.toBeNull();
     });
   });
 });

@@ -7,6 +7,8 @@ import {
   element,
   click,
   propsOf,
+  container,
+  renderAdditional,
 } from "./reactTestExtensions";
 import { AppointmentFormLoader } from "../src/AppointmentFormLoader";
 import { AppointmentsDayViewLoader } from "../src/AppointmentsDayViewLoader";
@@ -151,10 +153,39 @@ describe("App", () => {
     const navigateToSearchCustomers = () =>
       click(element("menu > li:nth-of-type(2) > button"));
 
+    const searchFor = (customer) =>
+      propsOf(CustomerSearch).renderCustomerActions(customer);
+
     it("displays the CustomerSearch when button is clicked", async () => {
       render(<App />);
       navigateToSearchCustomers();
       expect(element("#CustomerSearch")).not.toBeNull();
+    });
+
+    it("passes a button to the CustomerSearch named Create appointment", async () => {
+      render(<App />);
+      navigateToSearchCustomers();
+      const buttonContainer = renderAdditional(searchFor());
+      expect(buttonContainer.firstChild).toBeElementWithTag(
+        "button"
+      );
+      expect(buttonContainer.firstChild).toContainText(
+        "Create appointment"
+      );
+    });
+
+    it("clicking appointment button shows the appointment form for that customer", async () => {
+      const customer = { id: 123 };
+      render(<App />);
+      navigateToSearchCustomers();
+      const buttonContainer = renderAdditional(
+        searchFor(customer)
+      );
+      click(buttonContainer.firstChild);
+      expect(element("#AppointmentFormLoader")).not.toBeNull();
+      expect(
+        propsOf(AppointmentFormLoader).original
+      ).toMatchObject({ customer: 123 });
     });
   });
 });

@@ -16,6 +16,17 @@ export const render = (component) =>
 export const renderAndWait = (component) =>
   act(async () => reactRoot.render(component));
 
+export const renderAdditional = (component) => {
+  const additionalContainer =
+    document.createElement("div");
+  act(() =>
+    ReactDOM.createRoot(additionalContainer).render(
+      component
+    )
+  );
+  return additionalContainer;
+};
+
 export const click = (element) =>
   act(() => element.click());
 

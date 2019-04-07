@@ -43,6 +43,16 @@ export const App = () => {
     []
   );
 
+  const searchActions = (customer) => (
+    <button
+      onClick={() =>
+        transitionToAddAppointment(customer)
+      }
+    >
+      Create appointment
+    </button>
+  );
+
   switch (view) {
     case "addCustomer":
       return (
@@ -52,7 +62,11 @@ export const App = () => {
         />
       );
     case "searchCustomers":
-      return <CustomerSearch />;
+      return (
+        <CustomerSearch
+          renderCustomerActions={searchActions}
+        />
+      );
     case "addAppointment":
       return (
         <AppointmentFormLoader

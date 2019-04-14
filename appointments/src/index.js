@@ -13,6 +13,6 @@ ReactDOM.createRoot(
     original={{}}
     availableTimeSlots={sampleAvailableTimeSlots}
     appointments={sampleAppointments}
-    onSubmit={() => {}}
+    onSave={() => {}}
   />
 );

@@ -245,7 +245,7 @@ describe("CustomerForm", () => {
 
   describe("when POST request returns an error", () => {
     beforeEach(() => {
-      global.fetch.mockResolvedValue(
+      global.fetch.mockResolvedValueOnce(
         fetchResponseError()
       );
     });
@@ -272,6 +272,24 @@ describe("CustomerForm", () => {
       expect(element("[role=alert]")).toContainText(
         "error occurred"
       );
+    });
+
+    it("clears error message when fetch call succeeds", async () => {
+      global.fetch.mockResolvedValue(
+        fetchResponseOk()
+      );
+      render(
+        <CustomerForm
+          original={blankCustomer}
+          onSave={() => {}}
+        />
+      );
+      await clickAndWait(submitButton());
+      await clickAndWait(submitButton());
+
+      expect(
+        element("[role=alert]")
+      ).not.toContainText("error occurred");
     });
   });
 });

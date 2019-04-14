@@ -18,13 +18,9 @@ import {
 } from "./reactTestExtensions";
 import { AppointmentForm } from "../src/AppointmentForm";
 import { today, todayAt, tomorrowAt } from "./builders/time";
+import { blankAppointment } from "./builders/appointment";
 
 describe("AppointmentForm", () => {
-  const blankAppointment = {
-    service: "",
-    stylist: "",
-  };
-
   const availableTimeSlots = [
     {
       startsAt: todayAt(9),

@@ -18,14 +18,9 @@ import {
   fetchResponseError,
 } from "./builders/fetch";
 import { CustomerForm } from "../src/CustomerForm";
+import { blankCustomer } from "./builders/customer";
 
 describe("CustomerForm", () => {
-  const blankCustomer = {
-    firstName: "",
-    lastName: "",
-    phoneNumber: "",
-  };
-
   beforeEach(() => {
     initializeReactContainer();
     jest

@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { Dialog } from "./Dialog";
 import { useSelector, useDispatch } from "react-redux";
 import { initialState } from "./parser";
 
@@ -6,7 +7,10 @@ const reset = () => ({ type: "RESET" });
 const undo = () => ({ type: "UNDO" });
 const redo = () => ({ type: "REDO" });
 const skipAnimating = () => ({ type: "SKIP_ANIMATING" });
-const startSharing = () => ({ type: "START_SHARING" });
+const startSharing = (button) => ({
+  type: "START_SHARING",
+  reset: button === "reset",
+});
 const stopSharing = () => ({ type: "STOP_SHARING" });
 
 const SharingUrl = ({ url }) => (
@@ -26,6 +30,11 @@ export const MenuButtons = () => {
   const dispatch = useDispatch();
 
   const canReset = nextInstructionId !== 0;
+
+  const [isSharingDialogOpen, setIsSharingDialogOpen] =
+    useState(false);
+
+  const openSharingDialog = () => setIsSharingDialogOpen(true);
 
   return (
     <>
@@ -67,13 +76,21 @@ export const MenuButtons = () => {
           Stop sharing
         </button>
       ) : (
-        <button
-          id="startSharing"
-          onClick={() => dispatch(startSharing())}
-        >
+        <button id="startSharing" onClick={openSharingDialog}>
           Start sharing
         </button>
       )}
+      {isSharingDialogOpen ? (
+        <Dialog
+          onClose={() => setIsSharingDialogOpen(false)}
+          onChoose={(button) => dispatch(startSharing(button))}
+          message="Do you want to share your previous commands, or would you like to reset to a blank script?"
+          buttons={[
+            { id: "keep", text: "Share previous" },
+            { id: "reset", text: "Reset" },
+          ]}
+        />
+      ) : null}
     </>
   );
 };

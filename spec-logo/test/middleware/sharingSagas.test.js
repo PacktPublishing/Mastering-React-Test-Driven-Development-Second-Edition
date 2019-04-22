@@ -1,9 +1,7 @@
 import { storeSpy, expectRedux } from "expect-redux";
 import { act } from "react-dom/test-utils";
 import { configureStore } from "../../src/store";
-import {
-  duplicateForSharing,
-} from "../../src/middleware/sharingSagas";
+import { duplicateForSharing } from "../../src/middleware/sharingSagas";
 
 const WEB_SOCKET_OPEN = WebSocket.OPEN;
 const WEB_SOCKET_CLOSED = WebSocket.CLOSED;
@@ -139,10 +137,62 @@ describe("sharingSaga", () => {
           url: "http://test:1234/index.html?watching=123",
         });
     });
+
+    it("puts an action of RESET if reset is true", async () => {
+      store.dispatch({
+        type: "START_SHARING",
+        reset: true,
+      });
+      await notifySocketOpened();
+      await sendSocketMessage({
+        type: "UNKNOWN",
+        id: 123,
+      });
+      return expectRedux(store)
+        .toDispatchAnAction()
+        .matching({ type: "RESET" });
+    });
+
+    it("shares all existing actions if reset is false", async () => {
+      const forward10 = {
+        type: "SUBMIT_EDIT_LINE",
+        text: "forward 10",
+      };
+      const right90 = {
+        type: "SUBMIT_EDIT_LINE",
+        text: "right 90",
+      };
+      store.dispatch(forward10);
+      store.dispatch(right90);
+      store.dispatch({
+        type: "START_SHARING",
+        reset: false,
+      });
+      await notifySocketOpened();
+      await sendSocketMessage({
+        type: "UNKNOWN",
+        id: 123,
+      });
+      expect(sendSpy).toBeCalledWith(
+        JSON.stringify({
+          type: "NEW_ACTION",
+          innerAction: forward10,
+        })
+      );
+      expect(sendSpy).toBeCalledWith(
+        JSON.stringify({
+          type: "NEW_ACTION",
+          innerAction: right90,
+        })
+      );
+    });
   });
 
   const startSharing = async () => {
-    store.dispatch({ type: "START_SHARING" });
+    store.dispatch({
+      type: "START_SHARING",
+      reset: true,
+    });
     await notifySocketOpened();
     await sendSocketMessage({
       type: "UNKNOWN",

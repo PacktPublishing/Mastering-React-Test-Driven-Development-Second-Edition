@@ -1,4 +1,5 @@
-import React from "react";
+import React, { useState } from "react";
+import { Dialog } from "./Dialog";
 import {
   useSelector,
   useDispatch,
@@ -11,8 +12,9 @@ const redo = () => ({ type: "REDO" });
 const skipAnimating = () => ({
   type: "SKIP_ANIMATING",
 });
-const startSharing = () => ({
+const startSharing = (button) => ({
   type: "START_SHARING",
+  reset: button === "reset",
 });
 const stopSharing = () => ({ type: "STOP_SHARING" });
 
@@ -32,6 +34,14 @@ export const MenuButtons = () => {
   const dispatch = useDispatch();
 
   const canReset = nextInstructionId !== 0;
+
+  const [
+    isSharingDialogOpen,
+    setIsSharingDialogOpen,
+  ] = useState(false);
+
+  const openSharingDialog = () =>
+    setIsSharingDialogOpen(true);
 
   return (
     <>
@@ -75,11 +85,26 @@ export const MenuButtons = () => {
       ) : (
         <button
           id="startSharing"
-          onClick={() => dispatch(startSharing())}
+          onClick={openSharingDialog}
         >
           Start sharing
         </button>
       )}
+      {isSharingDialogOpen ? (
+        <Dialog
+          onClose={() =>
+            setIsSharingDialogOpen(false)
+          }
+          onChoose={(button) =>
+            dispatch(startSharing(button))
+          }
+          message="Do you want to share your previous commands, or would you like to reset to a blank script?"
+          buttons={[
+            { id: "keep", text: "Share previous" },
+            { id: "reset", text: "Reset" },
+          ]}
+        />
+      ) : null}
     </>
   );
 };

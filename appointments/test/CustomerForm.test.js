@@ -41,11 +41,6 @@ describe("CustomerForm", () => {
     expect(form()).not.toBeNull();
   });
 
-  it("renders a submit button", () => {
-    render(<CustomerForm original={blankCustomer} />);
-    expect(submitButton()).not.toBeNull();
-  });
-
   const itRendersAsATextBox = (fieldName) =>
     it("renders as a text box", () => {
       render(
@@ -180,6 +175,35 @@ describe("CustomerForm", () => {
     );
     const event = await submitAndWait(form());
     expect(event.defaultPrevented).toBe(true);
+  });
+
+  describe("submit button", () => {
+    it("renders a submit button", () => {
+      render(
+        <CustomerForm original={blankCustomer} />
+      );
+      expect(submitButton()).not.toBeNull();
+    });
+
+    it("disables the submit button when submitting", async () => {
+      render(
+        <CustomerForm
+          original={validCustomer}
+          onSave={() => {}}
+        />
+      );
+      click(submitButton());
+      await act(async () => {
+        expect(submitButton().disabled).toBeTruthy();
+      });
+    });
+
+    it("initially does not disable submit button", () => {
+      render(
+        <CustomerForm original={validCustomer} />
+      );
+      expect(submitButton().disabled).toBeFalsy();
+    });
   });
 
   it("sends HTTP request to POST /customers when submitting data", async () => {

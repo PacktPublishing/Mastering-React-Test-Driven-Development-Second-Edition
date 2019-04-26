@@ -433,6 +433,46 @@ describe("CustomerForm", () => {
       });
     };
 
+    const itClearsFieldError = (
+      fieldName,
+      fieldValue
+    ) => {
+      it(`clears ${fieldName} error when user corrects it`, async () => {
+        render(
+          <CustomerForm original={validCustomer} />
+        );
+
+        withFocus(field(fieldName), () =>
+          change(field(fieldName), "")
+        );
+
+        withFocus(field(fieldName), () => {
+          change(field(fieldName), fieldValue);
+        });
+
+        expect(
+          errorFor(fieldName).textContent
+        ).toEqual("");
+      });
+    };
+
+    const itDoesNotInvalidateFieldOnKeypress = (
+      fieldName,
+      fieldValue
+    ) => {
+      it(`does not invalidate ${fieldName} field on keypress`, async () => {
+        render(
+          <CustomerForm original={validCustomer} />
+        );
+
+        change(field(fieldName), fieldValue);
+
+        expect(
+          errorFor(fieldName).textContent
+        ).toEqual("");
+      });
+    };
+
     itRendersAlertForFieldValidation("firstName");
     itSetsAlertAsAccessibleDescriptionForField(
       "firstName"
@@ -472,6 +512,23 @@ describe("CustomerForm", () => {
       "phoneNumber",
       "invalid",
       "Only numbers, spaces and these symbols are allowed: ( ) + -"
+    );
+
+    itClearsFieldError("firstName", "name");
+    itClearsFieldError("lastName", "name");
+    itClearsFieldError("phoneNumber", "1234567890");
+
+    itDoesNotInvalidateFieldOnKeypress(
+      "firstName",
+      ""
+    );
+    itDoesNotInvalidateFieldOnKeypress(
+      "lastName",
+      ""
+    );
+    itDoesNotInvalidateFieldOnKeypress(
+      "phoneNumber",
+      ""
     );
 
     it("accepts standard phone number characters when validating", () => {

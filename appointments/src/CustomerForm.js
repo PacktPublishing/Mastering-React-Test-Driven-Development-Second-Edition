@@ -25,11 +25,15 @@ export const CustomerForm = ({
 
   const [customer, setCustomer] = useState(original);
 
-  const handleChange = ({ target }) =>
+  const handleChange = ({ target }) => {
     setCustomer((customer) => ({
       ...customer,
       [target.name]: target.value,
     }));
+    if (hasError(validationErrors, target.name)) {
+      validateSingleField(target.name, target.value);
+    }
+  };
 
   const validators = {
     firstName: required("First name is required"),
@@ -43,9 +47,12 @@ export const CustomerForm = ({
     ),
   };
 
-  const handleBlur = ({ target }) => {
+  const validateSingleField = (
+    fieldName,
+    fieldValue
+  ) => {
     const result = validateMany(validators, {
-      [target.name]: target.value,
+      [fieldName]: fieldValue,
     });
     setValidationErrors({
       ...validationErrors,
@@ -60,6 +67,9 @@ export const CustomerForm = ({
         : ""}
     </span>
   );
+
+  const handleBlur = ({ target }) =>
+    validateSingleField(target.name, target.value);
 
   const doSave = async () => {
     setSubmitting(true);

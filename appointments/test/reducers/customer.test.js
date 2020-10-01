@@ -21,6 +21,14 @@ describe("customer reducer", () => {
 
     itMaintainsExistingState(reducer, action);
     itSetsStatus(reducer, action, "SUBMITTING");
+
+    it("resets error to false", () => {
+      expect(
+        reducer({ error: true }, action)
+      ).toMatchObject({
+        error: false,
+      });
+    });
   });
 
   describe("ADD_CUSTOMER_FAILED action", () => {

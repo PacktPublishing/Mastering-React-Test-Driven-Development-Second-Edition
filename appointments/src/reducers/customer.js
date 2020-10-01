@@ -11,7 +11,11 @@ export const reducer = (
 ) => {
   switch (action.type) {
     case "ADD_CUSTOMER_SUBMITTING":
-      return { ...state, status: "SUBMITTING" };
+      return {
+        ...state,
+        status: "SUBMITTING",
+        error: false,
+      };
     case "ADD_CUSTOMER_FAILED":
       return {
         ...state,

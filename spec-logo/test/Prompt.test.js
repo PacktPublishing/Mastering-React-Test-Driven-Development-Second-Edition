@@ -68,24 +68,32 @@ describe("Prompt", () => {
     change(textArea(), line);
   };
 
-  it("dispatches an action with the updated edit line when the user hits enter on the text field", () => {
-    const line =
-      "repeat 4\n[ forward 10 right 90 ]\n";
-    renderInTableWithStore(<Prompt />);
-    submitAnInstruction(line);
-    return expectRedux(store)
-      .toDispatchAnAction()
-      .matching({
-        type: "SUBMIT_EDIT_LINE",
-        text: line,
-      });
-  });
+  describe("user enters an instruction", () => {
+    it("dispatches an action with the updated edit line when the user hits enter on the text field", () => {
+      const line =
+        "repeat 4\n[ forward 10 right 90 ]\n";
+      renderInTableWithStore(<Prompt />);
+      submitAnInstruction(line);
+      return expectRedux(store)
+        .toDispatchAnAction()
+        .matching({
+          type: "SUBMIT_EDIT_LINE",
+          text: line,
+        });
+    });
 
-  describe("after submitting edit line", () => {
     it("blanks the edit field", () => {
       renderInTableWithStore(<Prompt />);
-      submitAnInstruction();
+      submitAnInstruction("forward 10\n");
       expect(textArea().value).toEqual("");
+    });
+
+    it("dispatches a START_ANIMATING event", () => {
+      renderInTableWithStore(<Prompt />);
+      submitAnInstruction("forward 10\n");
+      return expectRedux(store)
+        .toDispatchAnAction()
+        .matching({ type: "START_ANIMATING" });
     });
   });
 

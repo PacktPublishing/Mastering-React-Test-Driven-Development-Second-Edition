@@ -17,6 +17,10 @@ const promptHasFocused = () => ({
   type: "PROMPT_HAS_FOCUSED",
 });
 
+const startAnimating = () => ({
+  type: "START_ANIMATING",
+});
+
 export const Prompt = () => {
   const nextInstructionId = useSelector(
     ({ script: { nextInstructionId } }) =>
@@ -37,6 +41,7 @@ export const Prompt = () => {
   const handleChange = (e) => {
     setEditPrompt(e.target.value);
     if (shouldSubmit) {
+      dispatch(startAnimating());
       dispatch(submitEditLine(e.target.value));
       setShouldSubmit(false);
     }

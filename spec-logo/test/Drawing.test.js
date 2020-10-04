@@ -294,6 +294,37 @@ describe("Drawing", () => {
     });
   });
 
+  describe("skipping animation", () => {
+    const store = {
+      environment: { shouldAnimate: false },
+      script: {
+        drawCommands: [rotate90, horizontalLine],
+        turtle: { x: 123, y: 234, angle: 180 },
+      },
+    };
+
+    it("does not render AnimatedLine", () => {
+      renderWithStore(<Drawing />, store);
+      expect(AnimatedLine).not.toBeCalled();
+    });
+
+    it("draws all remaining commands as StaticLines", () => {
+      renderWithStore(<Drawing />, store);
+      expect(StaticLines).toBeRenderedWithProps({
+        lineCommands: [horizontalLine],
+      });
+    });
+
+    it("sets the turtle at the final position", () => {
+      renderWithStore(<Drawing />, store);
+      expect(Turtle).toBeRenderedWithProps({
+        x: 123,
+        y: 234,
+        angle: 180,
+      });
+    });
+  });
+
   describe("resetting", () => {
     it("resets Turtle position and angle to all-zeros", async () => {
       renderWithStore(<Drawing />, {

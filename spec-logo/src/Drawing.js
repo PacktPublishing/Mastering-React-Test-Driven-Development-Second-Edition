@@ -16,9 +16,17 @@ const movementSpeed = 5;
 const rotateSpeed = 1000 / 180;
 
 export const Drawing = () => {
-  const { drawCommands } = useSelector(
-    ({ script }) => script
-  );
+  const { drawCommands, finalTurtle, shouldAnimate } =
+    useSelector(
+      ({
+        script: { drawCommands, turtle },
+        environment: { shouldAnimate },
+      }) => ({
+        drawCommands,
+        finalTurtle: turtle,
+        shouldAnimate,
+      })
+    );
   const [
     animatingCommandIndex,
     setAnimatingCommandIndex,
@@ -32,6 +40,16 @@ export const Drawing = () => {
   if (animatingCommandIndex > drawCommands.length) {
     setAnimatingCommandIndex(0);
     setTurtle({ x: 0, y: 0, angle: 0 });
+  }
+
+  if (
+    !shouldAnimate &&
+    animatingCommandIndex < drawCommands.length
+  ) {
+    setAnimatingCommandIndex(drawCommands.length);
+    const lastCommand =
+      drawCommands[drawCommands.length - 1];
+    setTurtle((turtle) => finalTurtle);
   }
 
   const lineCommands = drawCommands

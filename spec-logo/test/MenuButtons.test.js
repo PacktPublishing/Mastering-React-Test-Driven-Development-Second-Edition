@@ -143,4 +143,48 @@ describe("MenuButtons", () => {
         .matching({ type: "REDO" });
     });
   });
+
+  describe("skip animation button", () => {
+    it("renders", () => {
+      renderWithStore(<MenuButtons />);
+      expect(
+        buttonWithLabel("Skip animation")
+      ).not.toBeNull();
+    });
+
+    it("is disabled if animations have already been skipped", () => {
+      renderWithStore(<MenuButtons />);
+      dispatchToStore({
+        type: "SKIP_ANIMATING",
+      });
+      expect(
+        buttonWithLabel(
+          "Skip animation"
+        ).hasAttribute("disabled")
+      ).toBeTruthy();
+    });
+
+    it("is enabled if animations have already been skipped", () => {
+      renderWithStore(<MenuButtons />);
+      dispatchToStore({
+        type: "START_ANIMATING",
+      });
+      expect(
+        buttonWithLabel(
+          "Skip animation"
+        ).hasAttribute("disabled")
+      ).toBeFalsy();
+    });
+
+    it("dispatches a SKIP_ANIMATING action when clicked", () => {
+      renderWithStore(<MenuButtons />);
+      dispatchToStore({
+        type: "START_ANIMATING",
+      });
+      click(buttonWithLabel("Skip animation"));
+      return expectRedux(store)
+        .toDispatchAnAction()
+        .matching({ type: "SKIP_ANIMATING" });
+    });
+  });
 });

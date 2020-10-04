@@ -4,6 +4,7 @@ describe("environmentReducer", () => {
   it("returns default state when existing state is undefined", () => {
     expect(reducer(undefined, {})).toEqual({
       promptFocusRequest: false,
+      shouldAnimate: true,
     });
   });
 
@@ -26,6 +27,28 @@ describe("environmentReducer", () => {
       )
     ).toEqual({
       promptFocusRequest: false,
+    });
+  });
+
+  it("sets shouldAnimate to false when receiving a SKIP_ANIMATING action", () => {
+    expect(
+      reducer(
+        { shouldAnimate: true },
+        { type: "SKIP_ANIMATING" }
+      )
+    ).toEqual({
+      shouldAnimate: false,
+    });
+  });
+
+  it("sets shouldAnimate to true when receiving a START_ANIMATING action", () => {
+    expect(
+      reducer(
+        { shouldAnimate: false },
+        { type: "START_ANIMATING" }
+      )
+    ).toEqual({
+      shouldAnimate: true,
     });
   });
 });

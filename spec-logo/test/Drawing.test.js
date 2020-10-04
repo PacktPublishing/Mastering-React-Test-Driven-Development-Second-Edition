@@ -334,12 +334,37 @@ describe("Drawing", () => {
       });
       triggerAnimationSequence([0, 500, 0, 500]);
       renderWithStore(<Drawing />, {
-        script: { drawCommands: [] },
+        script: {
+          drawCommands: [],
+          turtle: { x: 0, y: 0, angle: 0 },
+        },
       });
       expect(Turtle).toBeRenderedWithProps({
         x: 0,
         y: 0,
         angle: 0,
+      });
+    });
+  });
+
+  describe("undo", () => {
+    it("resets Turtle position to the store turtle position", () => {
+      renderWithStore(<Drawing />, {
+        script: {
+          drawCommands: [horizontalLine, rotate90],
+        },
+      });
+      triggerAnimationSequence([0, 500, 0, 500]);
+      renderWithStore(<Drawing />, {
+        script: {
+          drawCommands: [horizontalLine],
+          turtle: { x: 123, y: 234, angle: 90 },
+        },
+      });
+      expect(Turtle).toBeRenderedWithProps({
+        x: 123,
+        y: 234,
+        angle: 90,
       });
     });
   });

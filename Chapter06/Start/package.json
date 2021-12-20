@@ -1,0 +1,64 @@
+{
+  "name": "appointments",
+  "version": "1.0.0",
+  "description": "Appointments system",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm run build-server && webpack",
+    "build-server": "webpack --config webpack-server.config.js",
+    "format": "prettier --write {src,test,server}/*",
+    "lint": "eslint {src,test,server}/**/*",
+    "serve": "node dist/server/server.js",
+    "test": "jest",
+    "test-server": "jest --config server/jest.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "example.com"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.16.5",
+    "@babel/preset-env": "^7.16.5",
+    "@babel/preset-react": "^7.16.5",
+    "@faker-js/faker": "^6.1.2",
+    "babel-loader": "^8.2.3",
+    "eslint": "^8.6.0",
+    "eslint-plugin-react": "^7.28.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
+    "express": "^4.17.3",
+    "graphql-helix": "^1.11.0",
+    "jest": "^28.1.1",
+    "jest-environment-jsdom": "^28.1.1",
+    "jest-raw-loader": "^1.0.1",
+    "raw-loader": "^4.0.2",
+    "morgan": "^1.10.0",
+    "supertest": "^6.2.2",
+    "webpack": "^5.69.1",
+    "webpack-cli": "^4.9.2",
+    "webpack-node-externals": "^3.0.0"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.16.5",
+    "graphql": "^16.2.0",
+    "react": "^18.1.0",
+    "react-dom": "^18.1.0"
+  },
+  "prettier": {
+    "printWidth": 64
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "globals": {
+      "IS_REACT_ACT_ENVIRONMENT": true
+    },
+    "setupFilesAfterEnv": [
+      "./test/domMatchers.js"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/server/"
+    ]
+  }
+}

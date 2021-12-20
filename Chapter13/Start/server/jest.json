@@ -1,0 +1,7 @@
+{
+  "testPathIgnorePatterns": ["/node_modules/"],
+  "transform": {
+    "\\.graphql$": "jest-raw-loader",
+    "^.+\\.jsx?$": "babel-jest"
+  }
+}

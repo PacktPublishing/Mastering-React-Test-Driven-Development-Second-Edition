@@ -1,0 +1,75 @@
+{
+  "name": "appointments",
+  "version": "1.0.0",
+  "description": "Appointments system",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm run build-server && npx relay-compiler && webpack",
+    "build-server": "webpack --config webpack-server.config.js",
+    "format": "prettier --write {src,test,server}/*",
+    "lint": "eslint {src,test,server}/**/*",
+    "serve": "node dist/server/server.js",
+    "test": "jest",
+    "test-server": "jest --config server/jest.json"
+  },
+  "repository": {
+    "type": "git",
+    "url": "example.com"
+  },
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "@babel/plugin-transform-runtime": "^7.18.6",
+    "@babel/preset-env": "^7.18.6",
+    "@babel/preset-react": "^7.18.6",
+    "@faker-js/faker": "^7.3.0",
+    "babel-loader": "^8.2.5",
+    "babel-plugin-relay": "^14.1.0",
+    "eslint": "^8.21.0",
+    "eslint-plugin-react": "^7.30.1",
+    "eslint-plugin-react-hooks": "^4.6.0",
+    "expect-redux": "^5.0.3",
+    "express": "^4.18.1",
+    "graphql-helix": "^1.13.0",
+    "jest": "^28.1.1",
+    "jest-environment-jsdom": "^28.1.3",
+    "jest-raw-loader": "^1.0.1",
+    "morgan": "^1.10.0",
+    "raw-loader": "^4.0.2",
+    "react-relay": "^14.1.0",
+    "relay-compiler": "^14.1.0",
+    "supertest": "^6.2.4",
+    "webpack": "^5.74.0",
+    "webpack-cli": "^4.10.0",
+    "webpack-node-externals": "^3.0.0"
+  },
+  "dependencies": {
+    "@babel/runtime": "^7.18.6",
+    "graphql": "^16.5.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
+    "react-redux": "^8.0.2",
+    "react-router-dom": "^6.3.0",
+    "redux": "^4.2.0",
+    "redux-saga": "^1.1.3"
+  },
+  "prettier": {
+    "printWidth": 54
+  },
+  "jest": {
+    "testEnvironment": "jsdom",
+    "globals": {
+      "IS_REACT_ACT_ENVIRONMENT": true
+    },
+    "setupFilesAfterEnv": [
+      "./test/domMatchers.js",
+      "./test/globals.js"
+    ],
+    "testPathIgnorePatterns": [
+      "/node_modules/",
+      "/server/"
+    ],
+    "clearMocks": true,
+    "restoreMocks": true
+  }
+}

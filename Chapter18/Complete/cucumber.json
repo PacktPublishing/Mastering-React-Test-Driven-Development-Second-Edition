@@ -1,0 +1,8 @@
+{
+  "default": {
+    "publishQuiet": true,
+    "requireModule": [
+      "@babel/register"
+    ]
+  }
+}

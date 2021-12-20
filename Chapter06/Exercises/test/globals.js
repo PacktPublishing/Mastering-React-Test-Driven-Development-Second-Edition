@@ -1,0 +1,1 @@
+global.fetch = () => Promise.resolve({});

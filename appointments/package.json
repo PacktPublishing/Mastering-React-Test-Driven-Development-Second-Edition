@@ -41,6 +41,7 @@
     "testEnvironment": "jsdom",
     "globals": {
       "IS_REACT_ACT_ENVIRONMENT": true
-    }
+    },
+    "setupFilesAfterEnv": ["./test/domMatchers.js"]
   }
 }

@@ -1,10 +1,15 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
-import { act } from "react-dom/test-utils";
 import {
   Appointment,
   AppointmentsDayView,
 } from "../src/AppointmentsDayView";
+
+import {
+  initializeReactContainer,
+  render,
+  click,
+} from "./reactTestExtensions";
 
 describe("Appointment", () => {
   const blankCustomer = {
@@ -13,17 +18,9 @@ describe("Appointment", () => {
     phoneNumber: "",
   };
 
-  let container;
-
   beforeEach(() => {
-    container = document.createElement("div");
-    document.body.replaceChildren(container);
+    initializeReactContainer();
   });
-
-  const render = (component) =>
-    act(() =>
-      ReactDOM.createRoot(container).render(component)
-    );
 
   const appointmentTable = () =>
     document.querySelector(
@@ -190,17 +187,9 @@ describe("AppointmentsDayView", () => {
     },
   ];
 
-  let container;
-
   beforeEach(() => {
-    container = document.createElement("div");
-    document.body.replaceChildren(container);
+    initializeReactContainer();
   });
-
-  const render = (component) =>
-    act(() =>
-      ReactDOM.createRoot(container).render(component)
-    );
 
   it("renders a div with the right id", () => {
     render(<AppointmentsDayView appointments={[]} />);
@@ -286,7 +275,7 @@ describe("AppointmentsDayView", () => {
     );
     const button =
       document.querySelectorAll("button")[1];
-    act(() => button.click());
+    click(button);
     expect(document.body.textContent).toContain(
       "Jordan"
     );
@@ -300,7 +289,7 @@ describe("AppointmentsDayView", () => {
     );
     const button =
       document.querySelectorAll("button")[1];
-    act(() => button.click());
+    click(button);
     expect(button.className).toContain("toggled");
   });
 

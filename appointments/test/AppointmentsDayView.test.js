@@ -278,9 +278,7 @@ describe("AppointmentsDayView", () => {
       />
     );
     click(secondButton());
-    expect(secondButton().className).toMatch(
-      "toggled"
-    );
+    expect(secondButton()).toHaveClass("toggled");
   });
 
   it("does not add toggled class if button is not selected", () => {
@@ -292,5 +290,6 @@ describe("AppointmentsDayView", () => {
     expect(secondButton().className).not.toMatch(
       "toggled"
     );
+    expect(secondButton()).not.toHaveClass("toggled");
   });
 });

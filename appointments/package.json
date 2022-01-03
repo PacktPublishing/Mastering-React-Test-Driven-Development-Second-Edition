@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "test": "jest",
-    "format": "prettier --write {src,test}/*"
+    "format": "prettier --write {src,test}/*",
+    "lint": "eslint {src,test}/**/*"
   },
   "repository": {
     "type": "git",
@@ -17,6 +18,9 @@
     "@babel/plugin-transform-runtime": "^7.16.5",
     "@babel/preset-env": "^7.16.5",
     "@babel/preset-react": "^7.16.5",
+    "eslint": "^8.6.0",
+    "eslint-plugin-react": "^7.28.0",
+    "eslint-plugin-react-hooks": "^4.3.0",
     "jest": "^28.1.1"
   },
   "dependencies": {

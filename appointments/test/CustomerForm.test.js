@@ -41,6 +41,9 @@ describe("CustomerForm", () => {
     };
   };
 
+  const bodyOfLastFetchRequest = () =>
+    JSON.parse(fetchSpy.receivedArgument(1).body);
+
   it("renders a form", () => {
     render(<CustomerForm original={blankCustomer} />);
     expect(form()).not.toBeNull();
@@ -88,12 +91,7 @@ describe("CustomerForm", () => {
       render(<CustomerForm original={customer} />);
       click(submitButton());
 
-      expect(fetchSpy).toBeCalledWith(
-        expect.anything(),
-        expect.objectContaining({
-          body: JSON.stringify(customer),
-        })
-      );
+      expect(bodyOfLastFetchRequest()).toMatchObject(customer);
     });
 
   const itSubmitsNewValue = (fieldName, value) =>
@@ -102,15 +100,9 @@ describe("CustomerForm", () => {
       change(field(fieldName), value);
       click(submitButton());
 
-      expect(fetchSpy).toBeCalledWith(
-        expect.anything(),
-        expect.objectContaining({
-          body: JSON.stringify({
-            ...blankCustomer,
-            [fieldName]: value,
-          }),
-        })
-      );
+      expect(bodyOfLastFetchRequest()).toMatchObject({
+        [fieldName]: value,
+      });
     });
 
   describe("first name field", () => {

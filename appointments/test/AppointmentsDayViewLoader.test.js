@@ -49,12 +49,11 @@ describe("AppointmentsDayViewLoader", () => {
       <AppointmentsDayViewLoader />
     );
 
-    expect(AppointmentsDayView).toBeCalledWith(
-      {
-        appointments: [],
-      },
-      expect.anything()
-    );
+    expect(
+      AppointmentsDayView
+    ).toBeFirstRenderedWithProps({
+      appointments: [],
+    });
   });
 
   it("fetches data when component is mounted", async () => {

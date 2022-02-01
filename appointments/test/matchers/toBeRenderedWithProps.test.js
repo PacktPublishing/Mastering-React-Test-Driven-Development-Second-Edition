@@ -88,6 +88,26 @@ describe("toBeFirstRenderedWithProps", () => {
       stripTerminalColor(result.message())
     ).toMatch(`Rendered with props: {"a": "b"}`);
   });
+
+  it("returns a message that the passed object is not a mock", () => {
+    const result = toBeFirstRenderedWithProps(
+      <div />,
+      {}
+    );
+    expect(
+      stripTerminalColor(result.message())
+    ).toMatch(`mockedComponent is not a mock`);
+  });
+
+  it("returns a message that the component was never rendered", () => {
+    const result = toBeFirstRenderedWithProps(
+      Component,
+      {}
+    );
+    expect(
+      stripTerminalColor(result.message())
+    ).toMatch(`mockedComponent was never rendered`);
+  });
 });
 
 describe("toBeRenderedWithProps", () => {
@@ -163,5 +183,22 @@ describe("toBeRenderedWithProps", () => {
     expect(
       stripTerminalColor(result.message())
     ).toMatch(`Rendered with props: {"a": "b"}`);
+  });
+
+  it("returns a message that the passed object is not a mock", () => {
+    const result = toBeRenderedWithProps(<div />, {});
+    expect(
+      stripTerminalColor(result.message())
+    ).toMatch(`mockedComponent is not a mock`);
+  });
+
+  it("returns a message that the component was never rendered", () => {
+    const result = toBeRenderedWithProps(
+      Component,
+      {}
+    );
+    expect(
+      stripTerminalColor(result.message())
+    ).toMatch(`mockedComponent was never rendered`);
   });
 });

@@ -22,8 +22,15 @@ const toBeRenderedSpecificCall = (
       { isNot: pass }
     );
 
-  const actualHint = () =>
-    `Rendered with props: ${printReceived(actualProps)}`;
+  const actualHint = () => {
+    if (!mockedComponent || !mockedComponent.mock) {
+      return "mockedComponent is not a mock";
+    }
+    if (!mockedCall) {
+      return "mockedComponent was never rendered";
+    }
+    return `Rendered with props: ${printReceived(actualProps)}`;
+  };
 
   const message = () =>
     [sourceHint(), actualHint()].join("\n\n");
@@ -38,7 +45,7 @@ export const toBeFirstRenderedWithProps = (
   mockedComponent,
   expectedProps
 ) => {
-  const firstCall = mockedComponent.mock.calls[0];
+  const firstCall = mockedComponent?.mock?.calls[0];
   return toBeRenderedSpecificCall(
     "toBeFirstRenderedWithProps",
     mockedComponent,
@@ -52,8 +59,8 @@ export const toBeRenderedWithProps = (
   expectedProps
 ) => {
   const lastCall =
-    mockedComponent.mock.calls[
-      mockedComponent.mock.calls.length - 1
+    mockedComponent?.mock?.calls[
+      mockedComponent?.mock?.calls.length - 1
     ];
   return toBeRenderedSpecificCall(
     "toBeRenderedWithProps",

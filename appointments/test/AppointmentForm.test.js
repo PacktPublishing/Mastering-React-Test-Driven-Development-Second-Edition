@@ -22,6 +22,15 @@ describe("AppointmentForm", () => {
     { startsAt: todayAt(9, 30) },
   ];
 
+  const services = ["Cut", "Blow-dry"];
+
+  const testProps = {
+    today,
+    selectableServices: services,
+    availableTimeSlots,
+    original: blankAppointment,
+  };
+
   beforeEach(() => {
     initializeReactContainer();
   });
@@ -40,33 +49,18 @@ describe("AppointmentForm", () => {
   };
 
   it("renders a form", () => {
-    render(
-      <AppointmentForm
-        original={blankAppointment}
-        availableTimeSlots={availableTimeSlots}
-      />
-    );
+    render(<AppointmentForm {...testProps} />);
     expect(form()).not.toBeNull();
   });
 
   it("renders a submit button", () => {
-    render(
-      <AppointmentForm
-        original={blankAppointment}
-        availableTimeSlots={availableTimeSlots}
-      />
-    );
+    render(<AppointmentForm {...testProps} />);
     expect(submitButton()).not.toBeNull();
   });
 
   describe("service field", () => {
     it("renders as a select box", () => {
-      render(
-        <AppointmentForm
-          original={blankAppointment}
-          availableTimeSlots={availableTimeSlots}
-        />
-      );
+      render(<AppointmentForm {...testProps} />);
       expect(field("service")).not.toBeNull();
       expect(field("service").tagName).toEqual("SELECT");
     });
@@ -74,8 +68,8 @@ describe("AppointmentForm", () => {
     it("has a blank value as the first value", () => {
       render(
         <AppointmentForm
+          {...testProps}
           original={blankAppointment}
-          availableTimeSlots={availableTimeSlots}
         />
       );
       const firstOption = field("service").childNodes[0];
@@ -83,13 +77,10 @@ describe("AppointmentForm", () => {
     });
 
     it("lists all salon services", () => {
-      const services = ["Cut", "Blow-dry"];
-
       render(
         <AppointmentForm
-          original={blankAppointment}
+          {...testProps}
           selectableServices={services}
-          availableTimeSlots={availableTimeSlots}
         />
       );
 
@@ -99,13 +90,12 @@ describe("AppointmentForm", () => {
     });
 
     it("pre-selects the existing value", () => {
-      const services = ["Cut", "Blow-dry"];
       const appointment = { service: "Blow-dry" };
       render(
         <AppointmentForm
+          {...testProps}
           original={appointment}
           selectableServices={services}
-          availableTimeSlots={availableTimeSlots}
         />
       );
       const option = findOption(field("service"), "Blow-dry");

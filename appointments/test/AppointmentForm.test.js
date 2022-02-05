@@ -10,16 +10,16 @@ import {
   click,
 } from "./reactTestExtensions";
 import { AppointmentForm } from "../src/AppointmentForm";
+import { today, todayAt, tomorrowAt } from "./builders/time";
 
 describe("AppointmentForm", () => {
   const blankAppointment = {
     service: "",
   };
 
-  const today = new Date();
   const availableTimeSlots = [
-    { startsAt: today.setHours(9, 0, 0, 0) },
-    { startsAt: today.setHours(9, 30, 0, 0) },
+    { startsAt: todayAt(9) },
+    { startsAt: todayAt(9, 30) },
   ];
 
   beforeEach(() => {
@@ -172,13 +172,10 @@ describe("AppointmentForm", () => {
       );
 
     it("renders radio buttons in the correct table cell positions", () => {
-      const oneDayInMs = 24 * 60 * 60 * 1000;
-      const tomorrow = new Date(today.getTime() + oneDayInMs);
-
       const availableTimeSlots = [
-        { startsAt: today.setHours(9, 0, 0, 0) },
-        { startsAt: today.setHours(9, 30, 0, 0) },
-        { startsAt: tomorrow.setHours(9, 30, 0, 0) },
+        { startsAt: todayAt(9, 0) },
+        { startsAt: todayAt(9, 30) },
+        { startsAt: tomorrowAt(9, 30) },
       ];
 
       render(

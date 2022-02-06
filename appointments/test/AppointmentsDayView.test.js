@@ -14,6 +14,7 @@ import {
   textOf,
   typesOf,
 } from "./reactTestExtensions";
+import { todayAt } from "./builders/time";
 
 describe("Appointment", () => {
   const blankCustomer = {
@@ -121,12 +122,10 @@ describe("Appointment", () => {
   });
 
   it("renders the time as the heading", () => {
-    const today = new Date();
-    const timestamp = today.setHours(9, 0, 0);
     render(
       <Appointment
         customer={blankCustomer}
-        startsAt={timestamp}
+        startsAt={todayAt(9)}
       />
     );
     expect(element("h3")).toContainText(
@@ -136,14 +135,13 @@ describe("Appointment", () => {
 });
 
 describe("AppointmentsDayView", () => {
-  const today = new Date();
   const twoAppointments = [
     {
-      startsAt: today.setHours(12, 0),
+      startsAt: todayAt(12),
       customer: { firstName: "Ashley" },
     },
     {
-      startsAt: today.setHours(13, 0),
+      startsAt: todayAt(13),
       customer: { firstName: "Jordan" },
     },
   ];

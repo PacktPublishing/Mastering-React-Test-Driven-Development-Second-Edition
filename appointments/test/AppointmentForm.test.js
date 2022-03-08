@@ -170,6 +170,23 @@ describe("AppointmentForm", () => {
     );
   });
 
+  it("passes the customer id to fetch when submitting", async () => {
+    const appointment = {
+      ...blankAppointment,
+      customer: "123",
+    };
+    render(
+      <AppointmentForm
+        {...testProps}
+        original={appointment}
+      />
+    );
+    await clickAndWait(submitButton());
+    expect(bodyOfLastFetchRequest()).toMatchObject({
+      customer: "123",
+    });
+  });
+
   const itRendersAsASelectBox = (fieldName) => {
     it("renders as a select box", () => {
       render(<AppointmentForm {...testProps} />);

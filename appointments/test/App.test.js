@@ -118,26 +118,6 @@ describe("App", () => {
     expect(CustomerSearchRoute).toBeRendered();
   });
 
-  it("navigates to /addAppointment after the CustomerForm is submitted", () => {
-    renderWithRouter(<App />);
-    click(linkFor("/addCustomer"));
-    const onSave = propsOf(CustomerForm).onSave;
-    act(() => onSave(customer));
-    expect(history.location.pathname).toEqual(
-      "/addAppointment"
-    );
-  });
-
-  it("includes the customer id in the query string after the CustomerForm is submitted", () => {
-    renderWithRouter(<App />);
-    click(linkFor("/addCustomer"));
-    const onSave = propsOf(CustomerForm).onSave;
-    act(() => onSave(customer));
-    expect(history.location.search).toEqual(
-      "?customer=123"
-    );
-  });
-
   it("navigates to / when AppointmentFormRoute is saved", () => {
     renderWithRouter(<App />, {
       location: "/addAppointment?customer=123",

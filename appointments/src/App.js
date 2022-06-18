@@ -37,11 +37,6 @@ export const MainScreen = () => (
 export const App = () => {
   const navigate = useNavigate();
 
-  const transitionToAddAppointment = (customer) =>
-    navigate(
-      `/addAppointment?customer=${customer.id}`
-    );
-
   const transitionToDayView = () => navigate("/");
 
   const searchActions = (customer) => (
@@ -58,10 +53,7 @@ export const App = () => {
       <Route
         path="/addCustomer"
         element={
-          <CustomerForm
-            original={blankCustomer}
-            onSave={transitionToAddAppointment}
-          />
+          <CustomerForm original={blankCustomer} />
         }
       />
       <Route

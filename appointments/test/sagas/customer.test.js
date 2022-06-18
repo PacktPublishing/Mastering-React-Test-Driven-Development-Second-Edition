@@ -4,6 +4,7 @@ import {
   fetchResponseError,
 } from "../builders/fetch";
 import { configureStore } from "../../src/store";
+import { appHistory } from "../../src/history";
 
 describe("addCustomer", () => {
   const customer = { id: 123 };
@@ -77,6 +78,20 @@ describe("addCustomer", () => {
         type: "ADD_CUSTOMER_SUCCESSFUL",
         customer,
       });
+  });
+
+  it("navigates to /addAppointment on success", () => {
+    store.dispatch(addCustomerRequest());
+    expect(appHistory.location.pathname).toEqual(
+      "/addAppointment"
+    );
+  });
+
+  it("includes the customer id in the query string when navigating to /addAppointment", () => {
+    store.dispatch(addCustomerRequest());
+    expect(appHistory.location.search).toEqual(
+      "?customer=123"
+    );
   });
 
   it("dispatches ADD_CUSTOMER_FAILED on non-specific error", () => {

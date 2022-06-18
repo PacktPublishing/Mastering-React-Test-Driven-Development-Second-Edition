@@ -35,6 +35,7 @@ const AppointmentRow = ({ appointment }) => (
 
 export const CustomerHistory = ({ id }) => {
   const [customer, setCustomer] = useState(null);
+  const [status, setStatus] = useState("loading");
 
   useEffect(() => {
     const subscription = fetchQuery(
@@ -44,13 +45,28 @@ export const CustomerHistory = ({ id }) => {
         id,
       }
     ).subscribe({
-      next: ({ customer }) => setCustomer(customer),
+      next: ({ customer }) => {
+        setCustomer(customer);
+        setStatus("loaded");
+      },
+      error: (_) => setStatus("failed"),
     });
 
     return subscription.unsubscribe;
   }, [id]);
 
-  if (!customer) return <p role="alert">Loading</p>;
+  if (status === "loading") {
+    return <p role="alert">Loading</p>;
+  }
+
+  if (status === "failed") {
+    return (
+      <p role="alert">
+        Sorry, an error occurred while pulling data
+        from the server.
+      </p>
+    );
+  }
 
   const { firstName, lastName, phoneNumber } =
     customer;

@@ -1,4 +1,5 @@
 import { put, call } from "redux-saga/effects";
+import { appHistory } from "../history";
 
 const fetch = (url, data) =>
   global.fetch(url, {
@@ -17,6 +18,9 @@ export function* addCustomer({ customer }) {
       type: "ADD_CUSTOMER_SUCCESSFUL",
       customer: customerWithId,
     });
+    appHistory.push(
+      `/addAppointment?customer=${customerWithId.id}`
+    );
   } else if (result.status === 422) {
     const response = yield call([result, "json"]);
     yield put({

@@ -140,4 +140,22 @@ describe("CustomerHistory", () => {
       expect(container).toContainText("Loading");
     });
   });
+
+  describe("when there is an error fetching data", () => {
+    const errorSend = ({ error }) => {
+      act(() => error());
+      return { unsubscribe: unsubscribeSpy };
+    };
+
+    beforeEach(() => {
+      fetchQuery.mockReturnValue({ subscribe: errorSend });
+    });
+
+    it("displays an error message", async () => {
+      await renderAndWait(<CustomerHistory />);
+      expect(element("[role=alert]")).toContainText(
+        "Sorry, an error occurred while pulling data from the server."
+      );
+    });
+  });
 });

@@ -9,9 +9,9 @@ import {
   textOf,
   buttonWithLabel,
   changeAndWait,
-} from "./reactTestExtensions";
-import { CustomerSearch } from "../src/CustomerSearch";
-import { fetchResponseOk } from "./builders/fetch";
+} from "../reactTestExtensions";
+import { CustomerSearch } from "../../src/CustomerSearch/CustomerSearch";
+import { fetchResponseOk } from "../builders/fetch";
 
 const oneCustomer = [
   {

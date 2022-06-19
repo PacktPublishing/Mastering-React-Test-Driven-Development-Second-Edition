@@ -15,7 +15,7 @@ import { AppointmentsDayViewLoader } from "../src/AppointmentsDayViewLoader";
 import { CustomerForm } from "../src/CustomerForm";
 import { blankCustomer } from "./builders/customer";
 import { blankAppointment } from "./builders/appointment";
-import { CustomerSearch } from "../src/CustomerSearch";
+import { CustomerSearch } from "../src/CustomerSearch/CustomerSearch";
 
 jest.mock("../src/AppointmentFormLoader", () => ({
   AppointmentFormLoader: jest.fn(() => (
@@ -32,11 +32,14 @@ jest.mock("../src/CustomerForm", () => ({
     <div id="CustomerForm" />
   )),
 }));
-jest.mock("../src/CustomerSearch", () => ({
-  CustomerSearch: jest.fn(() => (
-    <div id="CustomerSearch" />
-  )),
-}));
+jest.mock(
+  "../src/CustomerSearch/CustomerSearch",
+  () => ({
+    CustomerSearch: jest.fn(() => (
+      <div id="CustomerSearch" />
+    )),
+  })
+);
 
 describe("App", () => {
   beforeEach(() => {

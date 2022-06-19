@@ -2,7 +2,7 @@ import React, { useState, useCallback } from "react";
 import { AppointmentFormLoader } from "./AppointmentFormLoader";
 import { AppointmentsDayViewLoader } from "./AppointmentsDayViewLoader";
 import { CustomerForm } from "./CustomerForm";
-import { CustomerSearch } from "./CustomerSearch";
+import { CustomerSearch } from "./CustomerSearch/CustomerSearch";
 
 const blankCustomer = {
   firstName: "",

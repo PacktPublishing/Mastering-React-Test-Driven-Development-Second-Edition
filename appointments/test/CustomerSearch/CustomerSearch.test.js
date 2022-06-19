@@ -9,9 +9,9 @@ import {
   textOf,
   buttonWithLabel,
   changeAndWait,
-} from "./reactTestExtensions";
-import { CustomerSearch } from "../src/CustomerSearch";
-import { fetchResponseOk } from "./builders/fetch";
+} from "../reactTestExtensions";
+import { CustomerSearch } from "../../src/CustomerSearch/CustomerSearch";
+import { fetchResponseOk } from "../builders/fetch";
 
 const oneCustomer = [
   { id: 1, firstName: "A", lastName: "B", phoneNumber: "1" },
@@ -293,7 +293,9 @@ describe("CustomerSearch", () => {
   });
 
   it("changing limit maintains current page", async () => {
-    global.fetch.mockResolvedValue(fetchResponseOk(tenCustomers));
+    global.fetch.mockResolvedValue(
+      fetchResponseOk(tenCustomers)
+    );
     await renderAndWait(<CustomerSearch />);
     await clickAndWait(buttonWithLabel("Next"));
     await clickAndWait(buttonWithLabel("20"));

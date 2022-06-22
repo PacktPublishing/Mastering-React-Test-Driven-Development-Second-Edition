@@ -27,6 +27,7 @@
     "eslint": "^8.21.0",
     "eslint-plugin-react": "^7.30.1",
     "eslint-plugin-react-hooks": "^4.6.0",
+    "expect-redux": "^5.0.3",
     "express": "^4.18.1",
     "graphql-helix": "^1.13.0",
     "jest": "^28.1.1",
@@ -44,7 +45,10 @@
     "graphql": "^16.5.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
-    "react-router-dom": "^6.3.0"
+    "react-redux": "^8.0.2",
+    "react-router-dom": "^6.3.0",
+    "redux": "^4.2.0",
+    "redux-saga": "^1.1.3"
   },
   "prettier": {
     "printWidth": 54

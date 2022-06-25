@@ -24,6 +24,7 @@
     "@babel/preset-react": "^7.16.5",
     "@faker-js/faker": "^6.1.2",
     "babel-loader": "^8.2.3",
+    "babel-plugin-relay": "^14.0.0",
     "eslint": "^8.6.0",
     "eslint-plugin-react": "^7.28.0",
     "eslint-plugin-react-hooks": "^4.3.0",
@@ -36,6 +37,9 @@
     "morgan": "^1.10.0",
     "raw-loader": "^4.0.2",
     "supertest": "^6.2.2",
+    "react-redux": "^7.2.6",
+    "react-relay": "^14.0.0",
+    "relay-compiler": "^14.0.0",
     "webpack": "^5.69.1",
     "webpack-cli": "^4.9.2",
     "webpack-node-externals": "^3.0.0"

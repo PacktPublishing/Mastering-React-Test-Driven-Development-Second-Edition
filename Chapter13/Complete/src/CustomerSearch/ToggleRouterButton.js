@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 
 export const ToggleRouterButton = ({
   queryParams,
-  pathname,
   children,
   toggled,
 }) => (
@@ -12,7 +11,6 @@ export const ToggleRouterButton = ({
     className={toggled ? "toggled" : ""}
     role="button"
     to={{
-      pathname,
       search: objectToQueryString(queryParams),
     }}
   >

@@ -4,6 +4,7 @@ import {
   fetchResponseError,
 } from "../builders/fetch";
 import { configureStore } from "../../src/store";
+import { appHistory } from "../../src/history";
 
 describe("addCustomer", () => {
   const customer = { id: 123 };
@@ -16,14 +17,13 @@ describe("addCustomer", () => {
     store = configureStore([storeSpy]);
   });
 
-  const dispatchRequest = (customer) =>
-    store.dispatch({
-      type: "ADD_CUSTOMER_REQUEST",
-      customer,
-    });
+  const addCustomerRequest = (customer) => ({
+    type: "ADD_CUSTOMER_REQUEST",
+    customer,
+  });
 
   it("sets current status to submitting", () => {
-    dispatchRequest();
+    store.dispatch(addCustomerRequest());
 
     return expectRedux(store)
       .toDispatchAnAction()
@@ -32,7 +32,7 @@ describe("addCustomer", () => {
 
   it("sends HTTP request to POST /customers", async () => {
     const inputCustomer = { firstName: "Ashley" };
-    dispatchRequest(inputCustomer);
+    store.dispatch(addCustomerRequest(inputCustomer));
 
     expect(global.fetch).toBeCalledWith(
       "/customers",
@@ -42,9 +42,9 @@ describe("addCustomer", () => {
     );
   });
 
-  it("calls fetch with correction configuration", async () => {
+  it("calls fetch with correct configuration", async () => {
     const inputCustomer = { firstName: "Ashley" };
-    dispatchRequest(inputCustomer);
+    store.dispatch(addCustomerRequest(inputCustomer));
 
     expect(global.fetch).toBeCalledWith(
       expect.anything(),
@@ -57,7 +57,7 @@ describe("addCustomer", () => {
 
   it("calls fetch with customer as request body", async () => {
     const inputCustomer = { firstName: "Ashley" };
-    dispatchRequest(inputCustomer);
+    store.dispatch(addCustomerRequest(inputCustomer));
 
     expect(global.fetch).toBeCalledWith(
       expect.anything(),
@@ -68,7 +68,7 @@ describe("addCustomer", () => {
   });
 
   it("dispatches ADD_CUSTOMER_SUCCESSFUL on success", () => {
-    dispatchRequest();
+    store.dispatch(addCustomerRequest());
 
     return expectRedux(store)
       .toDispatchAnAction()
@@ -76,18 +76,20 @@ describe("addCustomer", () => {
   });
 
   it("navigates to /addAppointment on success", () => {
-    dispatchRequest();
-    expect(window.location.pathname).toEqual("/addAppointment");
+    store.dispatch(addCustomerRequest());
+    expect(appHistory.location.pathname).toEqual(
+      "/addAppointment"
+    );
   });
 
   it("includes the customer id in the query string when navigating to /addAppointment", () => {
-    dispatchRequest();
-    expect(window.location.search).toEqual("?customer=123");
+    store.dispatch(addCustomerRequest());
+    expect(appHistory.location.search).toEqual("?customer=123");
   });
 
   it("dispatches ADD_CUSTOMER_FAILED on non-specific error", () => {
     global.fetch.mockReturnValue(fetchResponseError());
-    dispatchRequest();
+    store.dispatch(addCustomerRequest());
 
     return expectRedux(store)
       .toDispatchAnAction()
@@ -103,7 +105,7 @@ describe("addCustomer", () => {
       fetchResponseError(422, { errors })
     );
 
-    dispatchRequest();
+    store.dispatch(addCustomerRequest());
 
     return expectRedux(store).toDispatchAnAction().matching({
       type: "ADD_CUSTOMER_VALIDATION_FAILED",

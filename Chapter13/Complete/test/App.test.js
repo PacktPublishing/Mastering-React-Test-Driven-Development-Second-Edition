@@ -60,12 +60,6 @@ describe("App", () => {
     renderWithRouter(<App />);
     expect(element("menu")).not.toBeNull();
   });
-});
-
-describe("App", () => {
-  beforeEach(() => {
-    initializeReactContainer();
-  });
 
   it("renders CustomerForm at the /addCustomer endpoint", () => {
     renderWithRouter(<App />, { location: "/addCustomer" });
@@ -93,14 +87,34 @@ describe("App", () => {
 
   const customer = { id: "123" };
 
-  it("has a button to add a customer and appointment", () => {
+  it("renders a link to the /addCustomer route", async () => {
     renderWithRouter(<App />);
-    const firstButton = element(
-      "menu > li:nth-of-type(1) > [role=button]"
-    );
-    expect(firstButton).toContainText(
+    expect(linkFor("/addCustomer")).toBeDefined();
+  });
+
+  it("captions the /addCustomer link as 'Add customer and appointment'", async () => {
+    renderWithRouter(<App />);
+    expect(linkFor("/addCustomer")).toContainText(
       "Add customer and appointment"
     );
+  });
+
+  it("renders a link to the /searchCustomers route", async () => {
+    renderWithRouter(<App />);
+    expect(linkFor("/searchCustomers")).toBeDefined();
+  });
+
+  it("captions the /searchCustomers link as 'Search customers'", async () => {
+    renderWithRouter(<App />);
+    expect(linkFor("/searchCustomers")).toContainText(
+      "Search customers"
+    );
+  });
+
+  it("displays the CustomerSearch when link is clicked", async () => {
+    renderWithRouter(<App />);
+    click(linkFor("/searchCustomers"));
+    expect(CustomerSearchRoute).toBeRendered();
   });
 
   it("navigates to / when AppointmentFormRoute is saved", () => {
@@ -113,42 +127,23 @@ describe("App", () => {
   });
 
   describe("search customers", () => {
-    it("has a button to search customers", () => {
-      renderWithRouter(<App />);
-      const secondButton = element(
-        "menu > li:nth-of-type(2) > [role=button]"
-      );
-      expect(secondButton).toContainText("Search customers");
-    });
-
-    const navigateToSearchCustomers = () =>
-      click(
-        element("menu > li:nth-of-type(2) > [role=button]")
-      );
-
     const searchFor = (customer) =>
       propsOf(CustomerSearchRoute).renderCustomerActions(
         customer
       );
 
-    it("displays the CustomerSearch when button is clicked", async () => {
-      renderWithRouter(<App />);
-      navigateToSearchCustomers();
-      expect(element("#CustomerSearchRoute")).not.toBeNull();
-    });
-
     it("renders a link to the /addAppointment route for each CustomerSearch row", async () => {
       renderWithRouter(<App />);
-      navigateToSearchCustomers();
+      click(linkFor("/searchCustomers"));
       renderWithRouter(searchFor(customer));
       expect(
         linkFor("/addAppointment?customer=123")
-      ).not.toBeNull();
+      ).toBeDefined();
     });
 
     it("renders a link to the /viewHistory route for each CustomerSearch row", () => {
       renderWithRouter(<App />);
-      navigateToSearchCustomers();
+      click(linkFor("/searchCustomers"));
       renderWithRouter(searchFor(customer));
       expect(
         linkFor("/viewHistory?customer=123")

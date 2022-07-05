@@ -15,7 +15,6 @@ jest.mock("react-router-dom", () => ({
 }));
 
 describe("ToggleRouterButton", () => {
-  const pathname = "/path";
   const queryParams = { a: "123", b: "234" };
 
   beforeEach(() => {
@@ -23,18 +22,12 @@ describe("ToggleRouterButton", () => {
   });
 
   it("renders a Link", () => {
-    render(
-      <ToggleRouterButton
-        pathname={pathname}
-        queryParams={queryParams}
-      />
-    );
+    render(<ToggleRouterButton queryParams={queryParams} />);
     expect(container.firstChild).toEqual(element("#Link"));
     expect(Link).toBeRenderedWithProps({
       className: "",
       role: "button",
       to: {
-        pathname: "/path",
         search: "?a=123&b=234",
       },
     });

@@ -7,7 +7,6 @@ export const SearchButtons = ({
   searchTerm,
   limit,
   lastRowIds,
-  pathname,
 }) => {
   limit = limit || 10;
 
@@ -48,7 +47,6 @@ export const SearchButtons = ({
           id="limit-10"
           toggled={limit === 10}
           queryParams={limitParams(10)}
-          pathname={pathname}
         >
           10
         </ToggleRouterButton>
@@ -58,7 +56,6 @@ export const SearchButtons = ({
           id="limit-20"
           toggled={limit === 20}
           queryParams={limitParams(20)}
-          pathname={pathname}
         >
           20
         </ToggleRouterButton>
@@ -68,7 +65,6 @@ export const SearchButtons = ({
           id="limit-50"
           toggled={limit === 50}
           queryParams={limitParams(50)}
-          pathname={pathname}
         >
           50
         </ToggleRouterButton>
@@ -78,7 +74,6 @@ export const SearchButtons = ({
           id="limit-100"
           toggled={limit === 100}
           queryParams={limitParams(100)}
-          pathname={pathname}
         >
           100
         </ToggleRouterButton>
@@ -88,7 +83,6 @@ export const SearchButtons = ({
           id="previous-page"
           queryParams={previousPageParams()}
           disabled={!hasPrevious}
-          pathname={pathname}
         >
           Previous
         </RouterButton>
@@ -98,7 +92,6 @@ export const SearchButtons = ({
           id="next-page"
           queryParams={nextPageParams()}
           disabled={!hasNext}
-          pathname={pathname}
         >
           Next
         </RouterButton>

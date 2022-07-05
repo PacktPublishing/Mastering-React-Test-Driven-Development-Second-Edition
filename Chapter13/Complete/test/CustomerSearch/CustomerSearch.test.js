@@ -37,7 +37,6 @@ describe("CustomerSearch", () => {
   const testProps = {
     navigate: jest.fn(),
     renderCustomerActions: jest.fn(() => {}),
-    location: { pathname: "/path" },
     searchTerm: "",
     lastRowIds: [],
   };
@@ -96,7 +95,7 @@ describe("CustomerSearch", () => {
       <CustomerSearch {...testProps} navigate={navigateSpy} />
     );
     change(element("input"), "name");
-    expect(navigateSpy).toBeCalledWith("/path?searchTerm=name");
+    expect(navigateSpy).toBeCalledWith("?searchTerm=name");
   });
 
   it("displays provided action buttons for each customer", async () => {
@@ -135,7 +134,6 @@ describe("CustomerSearch", () => {
         searchTerm="term"
         limit={20}
         lastRowIds={["123"]}
-        pathname="/path"
       />
     );
 
@@ -144,7 +142,6 @@ describe("CustomerSearch", () => {
       searchTerm: "term",
       limit: 20,
       lastRowIds: ["123"],
-      pathname: "/path",
     });
   });
 });

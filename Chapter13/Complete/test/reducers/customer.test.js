@@ -4,7 +4,7 @@ import {
   itSetsStatus,
 } from "../reducerGenerators";
 
-describe("reducer", () => {
+describe("customer reducer", () => {
   it("returns a default state for an undefined existing state", () => {
     expect(reducer(undefined, {})).toEqual({
       customer: {},

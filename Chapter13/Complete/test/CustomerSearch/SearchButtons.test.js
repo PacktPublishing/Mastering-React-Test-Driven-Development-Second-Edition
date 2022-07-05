@@ -31,7 +31,6 @@ describe("SearchButtons", () => {
   });
 
   const testProps = {
-    pathname: "/path",
     lastRowIds: ["123"],
     searchTerm: "term",
     customers: tenCustomers,
@@ -44,7 +43,6 @@ describe("SearchButtons", () => {
     it("renders", () => {
       render(<SearchButtons {...testProps} />);
       expect(previousPageButtonProps()).toMatchObject({
-        pathname: "/path",
         disabled: false,
       });
       expect(element("#previous-page")).toContainText(
@@ -97,7 +95,6 @@ describe("SearchButtons", () => {
     it("renders", () => {
       render(<SearchButtons {...testProps} />);
       expect(nextPageButtonProps()).toMatchObject({
-        pathname: "/path",
         disabled: false,
       });
       expect(element("#next-page")).toContainText("Next");
@@ -144,7 +141,6 @@ describe("SearchButtons", () => {
       });
       expect(buttonProps).toMatchObject({
         toggled: true,
-        pathname: "/path",
         queryParams: {
           limit: 10,
           lastRowIds: ["123"],
@@ -164,7 +160,6 @@ describe("SearchButtons", () => {
         render(<SearchButtons {...testProps} />);
         expect(buttonProps()).toMatchObject({
           toggled: false,
-          pathname: "/path",
           queryParams: {
             limit: limitSize,
             lastRowIds: ["123"],

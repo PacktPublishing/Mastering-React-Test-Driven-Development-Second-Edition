@@ -31,13 +31,6 @@ export const CustomerForm = ({ original }) => {
 
   const [customer, setCustomer] = useState(original);
 
-  const validateSingleField = (fieldName, fieldValue) => {
-    const result = validateMany(validators, {
-      [fieldName]: fieldValue,
-    });
-    setValidationErrors({ ...validationErrors, ...result });
-  };
-
   const handleChange = ({ target }) => {
     setCustomer((customer) => ({
       ...customer,
@@ -60,20 +53,15 @@ export const CustomerForm = ({ original }) => {
     ),
   };
 
-  const doSave = () => dispatch(addCustomerRequest(customer));
+  const validateSingleField = (fieldName, fieldValue) => {
+    const result = validateMany(validators, {
+      [fieldName]: fieldValue,
+    });
+    setValidationErrors({ ...validationErrors, ...result });
+  };
 
   const handleBlur = ({ target }) =>
     validateSingleField(target.name, target.value);
-
-  const handleSubmit = async (event) => {
-    event.preventDefault();
-    const validationResult = validateMany(validators, customer);
-    if (!anyErrors(validationResult)) {
-      await doSave();
-    } else {
-      setValidationErrors(validationResult);
-    }
-  };
 
   const renderError = (fieldName) => {
     const allValidationErrors = {
@@ -86,6 +74,16 @@ export const CustomerForm = ({ original }) => {
           {allValidationErrors[fieldName]}
         </span>
       );
+    }
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+    const validationResult = validateMany(validators, customer);
+    if (!anyErrors(validationResult)) {
+      dispatch(addCustomerRequest(customer));
+    } else {
+      setValidationErrors(validationResult);
     }
   };
 

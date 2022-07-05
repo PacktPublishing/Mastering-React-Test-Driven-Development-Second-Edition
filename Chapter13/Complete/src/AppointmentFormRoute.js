@@ -9,7 +9,7 @@ const blankAppointment = {
 };
 
 export const AppointmentFormRoute = (props) => {
-  const [params, _] = useSearchParams();
+  const [params] = useSearchParams();
 
   return (
     <AppointmentFormLoader

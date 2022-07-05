@@ -16,14 +16,13 @@ export const CustomerSearch = ({
   lastRowIds,
   searchTerm,
   limit,
-  location,
   navigate,
 }) => {
   const [customers, setCustomers] = useState([]);
 
   const handleSearchTextChanged = ({ target: { value } }) => {
     const params = { limit, searchTerm: value };
-    navigate(location.pathname + objectToQueryString(params));
+    navigate(objectToQueryString(params));
   };
 
   useEffect(() => {
@@ -60,7 +59,6 @@ export const CustomerSearch = ({
         searchTerm={searchTerm}
         limit={limit}
         lastRowIds={lastRowIds}
-        pathname={location.pathname}
       />
       <table>
         <thead>

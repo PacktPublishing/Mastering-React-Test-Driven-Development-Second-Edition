@@ -18,9 +18,7 @@ export const configureStore = (storeEnhancers = []) => {
 
   const store = createStore(
     combineReducers({ customer: customerReducer }),
-    compose(
-      ...[applyMiddleware(sagaMiddleware), ...storeEnhancers]
-    )
+    compose(applyMiddleware(sagaMiddleware), ...storeEnhancers)
   );
   sagaMiddleware.run(rootSaga);
 

@@ -64,7 +64,7 @@ export const CustomerHistory = ({ id }) => {
 
   const { firstName, lastName, phoneNumber } = customer;
   return (
-    <div id="customer">
+    <>
       <h2>
         {firstName} {lastName}
       </h2>
@@ -85,6 +85,6 @@ export const CustomerHistory = ({ id }) => {
           ))}
         </tbody>
       </table>
-    </div>
+    </>
   );
 };

@@ -26,18 +26,38 @@ describe("performFetch", () => {
       .mockResolvedValue(fetchResponseOk(response));
   });
 
-  it("calls global fetch", () => {
+  it("sends HTTP request to POST /graphql", () => {
     performFetch({ text }, variables);
-    expect(global.fetch).toBeCalledWith("/graphql", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        query: text,
-        variables,
-      }),
-    });
+    expect(global.fetch).toBeCalledWith(
+      "/graphql",
+      expect.objectContaining({
+        method: "POST",
+      })
+    );
+  });
+
+  it("calls fetch with the correct configuration", () => {
+    performFetch({ text }, variables);
+    expect(global.fetch).toBeCalledWith(
+      "/graphql",
+      expect.objectContaining({
+        credentials: "same-origin",
+        headers: { "Content-Type": "application/json" },
+      })
+    );
+  });
+
+  it("calls fetch with query and variables as request body", async () => {
+    performFetch({ text }, variables);
+    expect(global.fetch).toBeCalledWith(
+      "/graphql",
+      expect.objectContaining({
+        body: JSON.stringify({
+          query: text,
+          variables,
+        }),
+      })
+    );
   });
 
   it("returns the request data", async () => {
@@ -59,7 +79,7 @@ describe("buildEnvironment", () => {
   const store = { c: 345 };
   const recordSource = { d: 456 };
 
-  beforeAll(() => {
+  beforeEach(() => {
     Environment.mockImplementation(() => environment);
     Network.create.mockReturnValue(network);
     Store.mockImplementation(() => store);

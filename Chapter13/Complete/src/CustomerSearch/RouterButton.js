@@ -4,7 +4,6 @@ import { Link } from "react-router-dom";
 
 export const RouterButton = ({
   queryParams,
-  pathname,
   children,
   disabled,
 }) => (
@@ -12,7 +11,6 @@ export const RouterButton = ({
     className={disabled ? "disabled" : ""}
     role="button"
     to={{
-      pathname: pathname,
       search: objectToQueryString(queryParams),
     }}
   >

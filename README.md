@@ -48,8 +48,9 @@ With the following software and hardware list you can run all code files present
 | 1-19        | npm                    | Windows, Mac OS X, and Linux  |
 
 
-We also provide a PDF file that has color images of the screenshots/diagrams used in this book. [Click here to download it](Graphics Bundle Link).
+We also provide a PDF file that has color images of the screenshots/diagrams used in this book. [Click here to download it](https://packt.link/5dqQx).
 
+## What's in this repository
 
 This repository stores the source code for two JavaScript web applications which have been produced using a test-driven development (TDD) workflow. In addition to the application code, there are almost 500 Jest unit tests and also some Cucumber tests that utilise Puppeteer.
 
@@ -153,10 +154,10 @@ Because I preferred _x_ over _y_. This applies to the following, but note this l
 For the most part, there's a 1-to-1 mapping between the Jest API and the Mocha API. I maintain a page at https://reacttdd.com/migrating-from-jest-to-mocha that you can use as a quick guide to using Mocha rather than Jest as you go through the book.
 
 ### Related products <Other books you may enjoy>
-* Linux: Powerful Server Administration [[Packt]](https://www.packtpub.com/networking-and-servers/linux-powerful-server-administration?utm_source=github&utm_medium=repository&utm_campaign=9781788293778) [[Amazon]](https://www.amazon.com/dp/1788293770)
+* A Frontend Web Developer’s Guide to Testing [[Packt]](https://www.packtpub.com/product/a-front-end-web-developer-s-guide-to-testing/9781803238319) [[Amazon]](https://www.amazon.com/dp/1803238313)
 
-* Linux Device Drivers Development [[Packt]](https://www.packtpub.com/networking-and-servers/linux-device-drivers-development?utm_source=github&utm_medium=repository&utm_campaign=9781785280009) [[Amazon]](https://www.amazon.com/dp/1788293770)
-## What's in this repository
+* React 17 Design Patterns and Best Practices - Third Edition [[Packt]](https://www.packtpub.com/product/react-17-design-patterns-and-best-practices-third-edition/9781800560444) [[Amazon]](https://www.amazon.com/dp/1788293770)
+
 
 
 ## Get to Know the Author

@@ -1,28 +1,55 @@
-# Mastering React Test Driven Development, Second Edition
+# Mastering React Test-Driven Development - Second Edition
 
-This is the companion repository for the book _Mastering React Test-Driven Development_ by [Daniel Irvine](https://danielirvine.com), published by Packt and due for release in August 2022.
+<a href="https://www.packtpub.com/product/mastering-react-test-driven-development-second-edition/9781803247120"><img src="https://static.packt-cdn.com/products/9781803247120/cover/smaller" alt="Mastering React Test-Driven Development." height="256px" align="right"></a>
 
-* [How to buy the book](#how-to-buy-the-book)
-* [What's in this repository](#whats-in-this-repository)
-* [What's not in this repository](#whats-not-in-this-repository)
-* [How to use this repository](#how-to-use-this-repository)
-  * [If you don't have the book](#if-you-dont-have-the-book)
-  * [Following along with the book](#following-along-with-the-book)
-  * [Running tests](#running-tests)
-  * [Building and running the app](#building-and-running-the-app)
-  * [Other commands you can run](#other-commands-you-can-run)
-  * [Viewing the commit history](#viewing-the-commit-history)
-* [Troubleshooting](#troubleshooting)
-* [Other topics](#other-topics)
-  * [Why did you use library _x_ instead of _y_?](#why-did-you-use-library-x-instead-of-y)
-  * [How can I use Mocha instead of Jest?](#how-can-i-use-mocha-instead-of-jest)
-* [Get in touch](#get-in-touch)
+This is the code repository for [Mastering React Test-Driven Development - Second Edition](https://www.packtpub.com/product/mastering-react-test-driven-development-second-edition/9781803247120), published by Packt.
 
-## How to buy the book
+**Build simple and maintainable web apps with React, Redux and GraphQL**
 
-There should be links here at some point in August 2022. Please check back then :)
+## What is this book about?
+Test-driven development (TDD) is a programming workflow that helps you build your apps by specifying behavior as automated tests. The TDD workflow future-proofs apps so that they can be modified without fear of breaking existing functionality. Another benefit of TDD is that it helps dev teams communicate their intentions more clearly, by way of test specifications.
 
-## What's in this repository
+This book covers the following exciting features: 
+* Build test-driven applications using React 18 and Jest
+* Understand techniques and patterns for writing great automated tests
+* Use test doubles and mocks effectively
+* Test drive browser APIs, including fetch and WebSockets
+* Integrate with libraries such as React Router, Redux, and Relay (GraphQL)
+
+If you feel this book is for you, get your [copy](https://www.amazon.com/dp/1803247126) today!
+
+<a href="https://www.packtpub.com/?utm_source=github&utm_medium=banner&utm_campaign=GitHubBanner"><img src="https://raw.githubusercontent.com/PacktPublishing/GitHub/master/GitHub.png" 
+alt="https://www.packtpub.com/" border="5" /></a>
+
+
+## Instructions and Navigations
+All of the code is organized into folders. For example, Chapter02.
+
+The code will look like the following:
+```
+ReactDOM.createRoot(
+  document.getElementById("root")
+).render(
+  <AppointmentsDayView
+    appointments={sampleAppointments}
+  />
+);
+```
+
+**Following is what you need for this book:**
+This book is for frontend developers who are looking to improve their testing practices and increase the quality and maintainability of their applications. To make the most of this book, you’ll need knowledge of the JavaScript programming language.
+
+With the following software and hardware list you can run all code files present in the book (Chapter 1-19).
+
+### Software and Hardware List
+
+| Chapter  | Software required                   | OS required                        |
+| -------- | ------------------------------------| -----------------------------------|
+| 1-19        | npm                    | Windows, Mac OS X, and Linux  |
+
+
+We also provide a PDF file that has color images of the screenshots/diagrams used in this book. [Click here to download it](Graphics Bundle Link).
+
 
 This repository stores the source code for two JavaScript web applications which have been produced using a test-driven development (TDD) workflow. In addition to the application code, there are almost 500 Jest unit tests and also some Cucumber tests that utilise Puppeteer.
 
@@ -125,6 +152,22 @@ Because I preferred _x_ over _y_. This applies to the following, but note this l
 
 For the most part, there's a 1-to-1 mapping between the Jest API and the Mocha API. I maintain a page at https://reacttdd.com/migrating-from-jest-to-mocha that you can use as a quick guide to using Mocha rather than Jest as you go through the book.
 
+### Related products <Other books you may enjoy>
+* Linux: Powerful Server Administration [[Packt]](https://www.packtpub.com/networking-and-servers/linux-powerful-server-administration?utm_source=github&utm_medium=repository&utm_campaign=9781788293778) [[Amazon]](https://www.amazon.com/dp/1788293770)
+
+* Linux Device Drivers Development [[Packt]](https://www.packtpub.com/networking-and-servers/linux-device-drivers-development?utm_source=github&utm_medium=repository&utm_campaign=9781785280009) [[Amazon]](https://www.amazon.com/dp/1788293770)
+## What's in this repository
+
+
+## Get to Know the Author
+**Daniel Irvine**
+is a UK-based software consultant. He helps businesses simplify their existing codebases and assists development teams in improving the quality of their software using eXtreme Programming (XP) practices. He has been coaching developers for many years and co-founded the Queer Code London meetup.
+
+## Other books by the author
+* [Mastering React Test-Driven Development](https://www.packtpub.com/product/mastering-react-test-driven-development/9781789133417)
+
 ## Get in touch
 
 You can contact the author directly by raising Issues here in GitHub, or via his website at [danielirvine.com](https://danielirvine.com).
+
+

@@ -164,8 +164,6 @@ For the most part, there's a 1-to-1 mapping between the Jest API and the Mocha A
 **Daniel Irvine**
 is a UK-based software consultant. He helps businesses simplify their existing codebases and assists development teams in improving the quality of their software using eXtreme Programming (XP) practices. He has been coaching developers for many years and co-founded the Queer Code London meetup.
 
-## Other books by the author
-* [Mastering React Test-Driven Development](https://www.packtpub.com/product/mastering-react-test-driven-development/9781789133417)
 
 ## Get in touch
 

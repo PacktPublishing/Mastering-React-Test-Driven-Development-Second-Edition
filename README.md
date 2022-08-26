@@ -4,17 +4,17 @@
 
 This is the code repository for [Mastering React Test-Driven Development - Second Edition](https://www.packtpub.com/product/mastering-react-test-driven-development-second-edition/9781803247120), published by Packt.
 
-**Build simple and maintainable web apps with React, Redux and GraphQL**
+**Build simple and maintainable web apps with React, Redux, and GraphQL**
 
 ## What is this book about?
-Test-driven development (TDD) is a programming workflow that helps you build your apps by specifying behavior as automated tests. The TDD workflow future-proofs apps so that they can be modified without fear of breaking existing functionality. Another benefit of TDD is that it helps dev teams communicate their intentions more clearly, by way of test specifications.
+Test-driven development (TDD) is a programming workflow that helps you build your apps by specifying behavior as automated tests. The TDD workflow future-proofs apps so that they can be modified without fear of breaking existing functionality. Another benefit of TDD is that it helps software development teams communicate their intentions more clearly, by way of test specifications.
 
 This book covers the following exciting features: 
 * Build test-driven applications using React 18 and Jest
 * Understand techniques and patterns for writing great automated tests
 * Use test doubles and mocks effectively
-* Test drive browser APIs, including fetch and WebSockets
-* Integrate with libraries such as React Router, Redux, and Relay (GraphQL)
+* Test-drive browser APIs, including the Fetch API and the WebSocket API
+* Integrate with libraries such as React Router, Redux, and Relay (GraphQL
 
 If you feel this book is for you, get your [copy](https://www.amazon.com/dp/1803247126) today!
 

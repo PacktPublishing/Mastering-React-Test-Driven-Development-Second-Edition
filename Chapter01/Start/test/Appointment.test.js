@@ -15,3 +15,16 @@ describe("Appointment", () => {
         expect(document.body.textContent).toContain("Ashley");
     });
 });
+
+describe("Appointment", () => {
+    it("renders another customer first name", () => {
+        const customer = { firstName: "Jordan" };
+        const component = <Appointment customer={customer} />;
+        const container = document.createElement("div");
+        document.body.appendChild(container);
+        act(() => {
+            ReactDOM.createRoot(container).render(component);
+        });
+        expect(document.body.textContent).toContain("Jordan");
+    });
+});

@@ -169,3 +169,7 @@ is a software consultant based in London. He works with a variety of languages i
 You can contact the author directly by raising Issues here in GitHub, or via his website at [danielirvine.com](https://danielirvine.com).
 
 
+### Download a free PDF
+
+ <i>If you have already purchased a print or Kindle version of this book, you can get a DRM-free PDF version at no cost.<br>Simply click on the link to claim your free PDF.</i>
+<p align="center"> <a href="https://packt.link/free-ebook/9781803247120">https://packt.link/free-ebook/9781803247120 </a> </p>

@@ -161,7 +161,21 @@ For the most part, there's a 1-to-1 mapping between the Jest API and the Mocha A
 
 * React 17 Design Patterns and Best Practices - Third Edition [[Packt]](https://www.packtpub.com/product/react-17-design-patterns-and-best-practices-third-edition/9781800560444) [[Amazon]](https://www.amazon.com/dp/1788293770)
 
-
+## Errata 
+ * Page 89 (step 5):  **The function handleSubmit is defined like this:**
+``` 
+const handleSubmit = (event) => {
+  event.preventDefault();
+  onSubmit(original);
+};
+```
+**On page 93, before running step 10, you’ll also need to update handleSubmit to submit the current customer value rather than the original value, like this:**
+``` 
+const handleSubmit = (event) => {
+  event.preventDefault();
+  onSubmit(customer);
+};
+```
 
 ## Get to Know the Author
 **Daniel Irvine**

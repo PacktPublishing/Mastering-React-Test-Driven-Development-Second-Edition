@@ -169,13 +169,42 @@ const handleSubmit = (event) => {
   onSubmit(original);
 };
 ```
-**On page 93, before running step 10, you’ll also need to update handleSubmit to submit the current customer value rather than the original value, like this:**
+* On page 93, before running step 10, you’ll also need to update handleSubmit to submit the current customer value rather than the original value, like this:**
 ``` 
 const handleSubmit = (event) => {
   event.preventDefault();
   onSubmit(customer);
 };
 ```
+
+* Page 9 The result of running “npm test” on this step is slightly different, due to updates to the Jest module:
+```
+ FAIL  test/Appointment.test.js
+  ● Test suite failed to run
+
+    Your test suite must contain at least one test.
+```
+However, everything else remains the same.
+
+* Page 24 The code snippet in test 7 should read as follows:
+```
+import React from "react";
+export const Appointment = ({ customer }) => (
+  <div>{customer.firstName}</div>
+);
+```
+If you do not include the first line, as in the book text, you’ll get the following error when you run step 8:
+
+```
+● Appointment › renders another customer first name
+
+    ReferenceError: React is not defined
+
+    > 1 | export const Appointment = ({ customer }) => <div>{customer.firstName}</div>;
+        |                                       ^
+      2 |
+```
+
 
 ## Get to Know the Author
 **Daniel Irvine**
